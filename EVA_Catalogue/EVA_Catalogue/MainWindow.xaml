@@ -1,0 +1,427 @@
+﻿<Window x:Class="EVA_Catalogue.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:EVA_Catalogue"
+        mc:Ignorable="d"
+        WindowStartupLocation="CenterScreen"
+        Title="Settings" Height="1000" Width="700">
+    <Window.Resources>
+        <ResourceDictionary Source="Dictionary1.xaml" />
+    </Window.Resources>
+    <Grid>
+        <Grid>
+            <Grid.RowDefinitions>
+                <RowDefinition></RowDefinition>
+                <RowDefinition Height="90"></RowDefinition>
+                <RowDefinition Height="50"></RowDefinition>
+            </Grid.RowDefinitions>
+
+            <TabControl Grid.Row="0">
+                <TabItem Header="Параметры">
+                    <Grid>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="80"></RowDefinition>
+                            <RowDefinition></RowDefinition>
+                            <RowDefinition Height="25"></RowDefinition>
+                            <RowDefinition Height="50"></RowDefinition>
+                            <RowDefinition Height="25"></RowDefinition>
+                        </Grid.RowDefinitions>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="100"></ColumnDefinition>
+                            <ColumnDefinition Width="100"></ColumnDefinition>
+                            <ColumnDefinition></ColumnDefinition>
+                            <ColumnDefinition Width="100"></ColumnDefinition>
+                        </Grid.ColumnDefinitions>
+                        <!--<Button  Grid.Column="0" Grid.Row="0"  Height="20"  Margin="15,5,5,5" Content="Выбрать все" Command="{Binding btnSelectAll_Click}"/>-->
+                        <TextBlock  
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="4"
+                    TextAlignment ="Left"
+                    TextWrapping="Wrap"
+                    Margin="30,15,30,15">
+                    Ниже представлена таблица с именами параметров с которыми работает приложение EVA.
+                    Если в вашей моделе у семейств уже есть аналогичные параметры отвечающие за то же самое, Вы можете изменить имена
+                    в этой таблице. Тогда программа будет работать с ними
+                        </TextBlock>
+                        <StackPanel Grid.Row="1" Grid.Column="0" Grid.ColumnSpan="2">
+                            <TextBlock Margin="10,0,0,0" FontWeight="Bold" > Имя параметра:</TextBlock>
+                            <TextBox  Margin="10,10,10,15" Height="25" Text="{Binding ParamCircuitsNames}"></TextBox>
+                            <TextBox  Margin="10,0,10,15" Height="25" Text="{Binding ParamCircName}"></TextBox>
+                            <TextBox  Margin="10,0,10,15" Height="25" Text="{Binding ParamLoadName}"></TextBox>
+                            <TextBox  Margin="10,0,10,15" Height="25" Text="{Binding ParamTextName}"></TextBox>
+                            <TextBox  Margin="10,0,10,15" Height="25" Text="{Binding ParamDoubleName}"></TextBox>
+                        </StackPanel>
+                        <StackPanel Grid.Row="1" Grid.Column="2" Grid.ColumnSpan="2">
+                            <TextBlock  Margin="5,0,0,0" FontWeight="Bold"> Описание параметра:</TextBlock>
+                            <TextBlock  Margin="5,10,5,15" Height="25"> Параметр отвечающий за название кабельных линий при групп. прокладке</TextBlock>
+                            <TextBlock  Margin="5,0,5,10" Height="25"> Параметр отвечающий за название кабельных линий</TextBlock>
+                            <TextBlock  Margin="5,0, 5, 0" Height="35" TextWrapping="Wrap"> 
+                            Текстовый параметр наименований потребителей, которые будут записываться в цепь через запятую
+                            </TextBlock>
+                            <TextBlock  Margin="5,0, 5, 0" Height="35" TextWrapping="Wrap"> 
+                            Текстовый параметр для ввода данных, которые будут записываться в цепь через запятую
+                            </TextBlock>
+                            <TextBlock  Margin="5,0, 5, 15" Height="35" TextWrapping="Wrap"> 
+                            Числовой параметр, который суммируется по всем потребителям в цепи, и сумма записывается в цепь
+                            </TextBlock>
+
+                        </StackPanel>
+
+                        <!--<CheckBox Margin="30,2,5,2" Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="2"
+                                Content="Добавить общие параметры по умолчанию в проект"
+                                IsChecked="{Binding IsLoadSharedParameters}" >
+                        <CheckBox.LayoutTransform>
+                            <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
+                        </CheckBox.LayoutTransform>
+                    </CheckBox>-->
+
+                        <!--<Button Grid.Row="3"
+                    Grid.Column="1" 
+                    Grid.ColumnSpan="2"
+                    VerticalAlignment="Center"
+                    Height="30"
+                    Margin="30,5,30,5" 
+                    Command="{Binding DefaultValue}"
+                    Content="Выставить имена параметров по умолчанию" />
+                    <DockPanel Grid.Row="4" Grid.Column="0" Grid.ColumnSpan="4">
+                        <TextBlock Margin="10,0,0,0" FontWeight="Bold" > Сохранить настройки:</TextBlock>
+                        <RadioButton Margin="10,3,0,0" GroupName="Storage" Content="для всех проектов" IsChecked="{Binding IsStorageInFile}" ></RadioButton>
+                        <RadioButton Margin="10,3,0,0" GroupName="Storage" Content="для этого проекта" IsChecked="{Binding IsStorageInProject}"></RadioButton>
+                    </DockPanel>-->
+                    </Grid>
+                </TabItem>
+                <!--<TabItem Header="Семейства">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="50"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="50"></RowDefinition>
+
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+
+                        <ColumnDefinition Width="100"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <TextBlock  
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Grid.ColumnSpan="4"
+                    TextAlignment ="Left"
+                    VerticalAlignment="Center"
+                    TextWrapping="Wrap"
+                    Margin="60,15,30,15" >
+                    Вы можете загрузить семейства из установочной папки для работы с приложениями EVA:
+                    </TextBlock>
+                    <StackPanel Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1">
+                        <CheckBox Margin="10,10,0,10" Content="EVAex" IsChecked="{Binding IsLoadFamelesEVAex}">
+                            <CheckBox.LayoutTransform>
+                                <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
+                            </CheckBox.LayoutTransform>
+                        </CheckBox>
+                        <CheckBox Margin="10,10,0,10" Content="EVAstreams" IsChecked="{Binding IsLoadFamelesEVAstreams}" >
+                            <CheckBox.LayoutTransform>
+                                <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
+                            </CheckBox.LayoutTransform>
+                        </CheckBox>
+                        <CheckBox Margin="10,10,0,10" Content="EVAcircuits" IsChecked="{Binding IsLoadFamelesEVAcirc}">
+                            <CheckBox.LayoutTransform>
+                                <ScaleTransform ScaleX="1.1" ScaleY="1.1"/>
+                            </CheckBox.LayoutTransform>
+                        </CheckBox>
+                    </StackPanel>
+                </Grid>
+            </TabItem>-->
+                <!--<TabItem Header="Коэффициенты">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30"></RowDefinition>
+                        <RowDefinition></RowDefinition>
+                        
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="50"></ColumnDefinition>
+                        <ColumnDefinition></ColumnDefinition>
+                        <ColumnDefinition Width="50"></ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+                    <StackPanel Grid.Row="1" Grid.Column="1">
+                        <CheckBox Content="Показывать Py в легендах" Margin="5,5,5,5" IsChecked="{Binding IsShowPy}"></CheckBox>
+                        <CheckBox Content="Показывать Kc в легендах" Margin="5,5,5,5" IsChecked="{Binding IsShowKc}"></CheckBox>
+                    </StackPanel>
+                    
+                </Grid>
+            </TabItem>-->
+                <TabItem Header="Параметры цепи">
+                    <ScrollViewer>
+                        <DockPanel >
+                            <Grid DockPanel.Dock="Top">
+                                <Grid.ColumnDefinitions >
+                                    <ColumnDefinition Width="70"></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <GroupBox Header="In">
+                                    <StackPanel >
+                                        <ToggleButton Margin="0,10,0,3" Height="25" IsChecked="{Binding InTypeLoadName}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InLoadName}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InPSet}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InAccountingModeLoads}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InPhaseConnecting}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InCosF}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InPcurrent}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InIcurrent}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InCableDesignation}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InSingleOrMultiple}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InMarkCable}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InSectionCable1}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InFactLenCable1}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InSectionCable2}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InFactLenCable2}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InLenForCountTKZ}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InLenCableCurrent}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InAdmissibleLoss}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InCurrentLoss}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InSetWorkWinterSummer}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InCurrentTKZendLine}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InCountElements}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InTypePipe}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InDiameterPipe}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InLenPipe}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InLenCableInTray}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InRoom}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InTextName}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InDoubleName}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InProject}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InFunctional}"></ToggleButton>
+                                    </StackPanel>
+                                </GroupBox>
+                                <UniformGrid Columns="2" Grid.Column="1">
+                                    <GroupBox Header="Имя параметра">
+                                        <StackPanel>
+                                            <!--<DockPanel Margin="10,10,0,3" LastChildFill="True">
+                                        <CheckBox Height="16" Width="16" IsChecked="{Binding InTypeLoadName}" IsEnabled="False" DockPanel.Dock="Right" Style="{StaticResource myCheckboxStyle}"/>
+                                        <TextBox DockPanel.Dock="Right" Height="25" Text="{Binding ParamTypeLoadName}"  Width="AUTO"></TextBox>
+                                    </DockPanel>-->
+                                            <TextBox  Margin="10,10,0,3" Height="25" Text="{Binding ParamTypeLoadName,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamTypeLoadName}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamLoadName,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamLoadName}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamPSet,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamPSet}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamAccountingModeLoads,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamAccountingModeLoads}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamPhaseConnecting,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamPhaseConnecting}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamCosF,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamCosF}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamPcurrent,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamPcurrent}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamIcurrent,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamIcurrent}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamCableDesignation,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamCableDesignation}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamSingleOrMultiple,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamSingleOrMultiple}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamMarkCable,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamMarkCable}"/>
+                                            <DockPanel Margin="10,0,0,3" Height="25">
+                                                <TextBox DockPanel.Dock="Left"  Margin="0,0,5,0" Height="25" Width="80"  Text="{Binding ParamSectionCable11,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamSectionCable11}"/>
+                                                <TextBox Margin="5,0,5,0" Height="25" Width="80" Text="{Binding ParamSectionCable12,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamSectionCable12}"/>
+                                                <TextBox DockPanel.Dock="Right"  Margin="5,0,0,0" Height="25" Text="{Binding ParamSectionCable13,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamSectionCable13}"/>
+                                            </DockPanel>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamFactLenCable1,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamFactLenCable1}"/>
+                                            <DockPanel Margin="10,0,0,3" Height="25">
+                                                <TextBox DockPanel.Dock="Left"  Margin="0,0,5,0" Height="25" Width="80"  Text="{Binding ParamSectionCable21,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamSectionCable21}"/>
+                                                <TextBox Margin="5,0,5,0" Height="25" Width="80" Text="{Binding ParamSectionCable22,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamSectionCable22}"/>
+                                                <TextBox DockPanel.Dock="Right"  Margin="5,0,0,0" Height="25" Text="{Binding ParamSectionCable23,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamSectionCable23}"/>
+                                            </DockPanel>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamFactLenCable2,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamFactLenCable2}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamLenForCountTKZ,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamLenForCountTKZ}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamLenCableCurrent,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamLenCableCurrent}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamAdmissibleLoss,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamAdmissibleLoss}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamCurrentLoss,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamCurrentLoss}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamSetWorkWinterSummer,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamSetWorkWinterSummer}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamCurrentTKZendLine,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamCurrentTKZendLine}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamCountElements,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamCountElements}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamTypePipe,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamTypePipe}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamDiameterPipe,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamDiameterPipe}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamLenPipe,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamLenPipe}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamLenCableInTray,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamLenCableInTray}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamRoom,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamRoom}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamTextName,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamTextName}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamDoubleName,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamDoubleName}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamProject,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamProject}"/>
+                                            <TextBox  Margin="10,0,0,3" Height="25" Text="{Binding ParamFunctional,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamFunctional}"/>
+                                        </StackPanel>
+                                    </GroupBox>
+                                    <GroupBox Header="Описание параметра">
+                                        <StackPanel>
+                                            <TextBlock Margin="10,10,10,3" Height="25" Text="Тип нагрузки"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Наименование нагрузки"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Установленная мощность"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Режим учета нагрузок"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Фаза подключения"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Cos"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Расчетная мощность"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Расчетный ток"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Обозначение кабеля"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Одножильный\Многожильный"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Марка кабеля"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Сечения кабеля 1 "></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Фактическая длина кабеля 1"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Сечения кабеля 2 "></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="фактическая длина кабеля 2"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Длина для расчета ТКЗ"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Расчетная длина кабеля"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Допустимые потери на участке"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Расчетные потери напряжения на участке"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Режим работы Зима/Лето"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Расчет ТКЗ в конце линии"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Кол-во электроприемников"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Тип трубы"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Диаметр трубы"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Длина трубы"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Длина в лотке"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Помещение"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Вспомогательный текстовый параметр"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Вспомогательный числовой параметр"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Проект"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Функциональное назначение"></TextBlock>
+                                        </StackPanel>
+                                    </GroupBox>
+                                </UniformGrid>
+                            </Grid>
+                        </DockPanel>
+                    </ScrollViewer>
+
+
+                </TabItem>
+                <TabItem Header="Параметры панели">
+                    <ScrollViewer>
+                        <DockPanel >
+                            <Grid DockPanel.Dock="Top">
+                                <Grid.ColumnDefinitions >
+                                    <ColumnDefinition Width="70"></ColumnDefinition>
+                                    <ColumnDefinition></ColumnDefinition>
+                                </Grid.ColumnDefinitions>
+                                <GroupBox Header="In">
+                                    <StackPanel >
+                                        <ToggleButton Margin="0,10,0,3" Height="25" IsChecked="{Binding InPSetPanel}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InMode1}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InKc1}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InPcurrent1}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InScurrent1}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InCos1}"></ToggleButton>
+                                        <ToggleButton Margin="0,0,0,3" Height="25" IsChecked="{Binding InIcurrent1}"></ToggleButton>
+                                    </StackPanel>
+                                </GroupBox>
+
+
+
+                                <UniformGrid Columns="2" Grid.Column="1">
+                                    <GroupBox Header="Имя параметра">
+                                        <StackPanel>
+                                            <TextBox  Margin="10,10,10,3" Height="25" Text="{Binding ParamPSet,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamPSet}"/>
+                                            <TextBox  Margin="10,0,10,3"  Height="25" Text="{Binding ParamMode1,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamMode1}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamKc1,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamKc1}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamPcurrent1,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamPcurrent1}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamScurrent1,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamScurrent1}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamCos1,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamCos1}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamIcurrent1,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamIcurrent1}"/>
+
+                                            <TextBox  Margin="10,0,10,3"  Height="25" Text="{Binding ParamMode2,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamMode2}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamKc2,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamKc2}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamPcurrent2,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamPcurrent2}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamScurrent2,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamScurrent2}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamCos2,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamCos2}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamIcurrent2,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamIcurrent2}"/>
+
+                                            <TextBox  Margin="10,0,10,3"  Height="25" Text="{Binding ParamMode3,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamMode3}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamKc3,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamKc3}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamPcurrent3,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamPcurrent3}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamScurrent3,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamScurrent3}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamCos3,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamCos3}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamIcurrent3,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamIcurrent3}"/>
+
+                                            <TextBox  Margin="10,0,10,3"  Height="25" Text="{Binding ParamMode4,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamMode4}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamKc4,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamKc4}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamPcurrent4,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamPcurrent4}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamScurrent4,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamScurrent4}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamCos4,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamCos4}"/>
+                                            <TextBox  Margin="10,0,10,3" Height="25" Text="{Binding ParamIcurrent4,UpdateSourceTrigger=PropertyChanged}" Foreground="{Binding ColorParamIcurrent4}"/>
+
+
+                                        </StackPanel>
+                                    </GroupBox>
+                                    <GroupBox Header="Описание параметра">
+                                        <StackPanel>
+                                            <TextBlock Margin="10,10,10,3" Height="25" Text="Установленная мощность"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Режим (Зима/Лето/Зима пожар/Лето пожар)"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Коэффициент спроса"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Расчетная мощность"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Полная мощность"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Cos"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Расчетный ток"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Режим (Зима/Лето/Зима пожар/Лето пожар)"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Коэффициент спроса"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Расчетная мощность"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Полная мощность"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Cos"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Расчетный ток"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Режим (Зима/Лето/Зима пожар/Лето пожар)"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Коэффициент спроса"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Расчетная мощность"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Полная мощность"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Cos"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Расчетный ток"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Режим (Зима/Лето/Зима пожар/Лето пожар)"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Коэффициент спроса"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Расчетная мощность"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Полная мощность"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Cos"></TextBlock>
+                                            <TextBlock  Margin="10,0,10,3" Height="25" Text="Расчетный ток"></TextBlock>
+
+
+                                        </StackPanel>
+                                    </GroupBox>
+                                </UniformGrid>
+                            </Grid>
+                        </DockPanel>
+                    </ScrollViewer>
+
+                </TabItem>
+            </TabControl>
+            <DockPanel Grid.Row="1">
+                <CheckBox Margin="30,2,5,2" DockPanel.Dock="Top"
+                                Content="Добавить общие параметры по умолчанию в проект"
+                                IsChecked="{Binding IsLoadSharedParameters}" >
+                    <CheckBox.LayoutTransform>
+                        <ScaleTransform ScaleX="1.2" ScaleY="1.2"/>
+                    </CheckBox.LayoutTransform>
+                </CheckBox>
+                <Button DockPanel.Dock="Top"
+                    VerticalAlignment="Center"
+                    Height="30"
+                    Margin="30,5,30,5" 
+                    Command="{Binding DefaultValue}"
+                    Content="Выставить имена параметров по умолчанию" />
+                <DockPanel DockPanel.Dock="Top">
+                    <TextBlock Margin="10,0,0,0" FontWeight="Bold" > Сохранить настройки:</TextBlock>
+                    <RadioButton Margin="10,3,0,0" GroupName="Storage" Content="для всех проектов"  IsChecked="{Binding IsStorageInFile}" ></RadioButton>
+                    <RadioButton Margin="10,3,0,0" GroupName="Storage" Content="для этого проекта" IsChecked="{Binding IsStorageInProject}"></RadioButton>
+                </DockPanel>
+            </DockPanel>
+            <DockPanel Grid.Row="2">
+                <Button DockPanel.Dock="Left"
+                Grid.Row="1" 
+                Width="130" 
+                Margin="10,10,0,9.6"
+                Command="{Binding Accept}" 
+                Content="OK" Click="Button_Click"/>
+
+                <Button DockPanel.Dock="Right"
+                HorizontalAlignment="Right"
+                Grid.Row="1"
+                Height="30" 
+                Width="130"
+                Margin="10,10,10,10" 
+                Command="{Binding Cancel}" 
+                Content="Cancel" 
+                IsCancel="True"/>
+            </DockPanel>
+        </Grid>
+
+    </Grid>
+</Window>
