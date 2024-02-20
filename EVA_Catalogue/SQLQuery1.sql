@@ -1,0 +1,1 @@
+﻿UPDATE [Модульные автоматические выключатели] SET [ThermalOverloadRelease] = 1

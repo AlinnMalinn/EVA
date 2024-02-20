@@ -22,5 +22,16 @@ namespace EVA_Catalogue.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.SpecialSettingAttribute(global::System.Configuration.SpecialSetting.ConnectionString)]
+        [global::System.Configuration.DefaultSettingValueAttribute("Data Source=DESKTOP-7V31QE6\\SQLEXPRESS;Initial Catalog=Devices;Integrated Securit" +
+            "y=True")]
+        public string WPF_Connection {
+            get {
+                return ((string)(this["WPF_Connection"]));
+            }
+        }
     }
 }
