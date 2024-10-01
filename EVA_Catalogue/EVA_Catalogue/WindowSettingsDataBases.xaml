@@ -1,0 +1,209 @@
+﻿<Window x:Class="EVA_Catalogue.WindowSettingsDataBases"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:viewmodel="clr-namespace:EVA_Catalogue"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        xmlns:local="clr-namespace:EVA_Catalogue"
+        Title="Звгрузить/Выгрузить каталоги"
+        Width="800"
+        Height="800"
+        MinWidth="700"
+        MinHeight="350"
+        AllowsTransparency="True"
+        Background="Transparent"
+        FontFamily="{materialDesign:NotoFont}"
+        ResizeMode="CanResize"
+        TextElement.FontSize="14"
+        TextElement.FontWeight="Regular"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        UseLayoutRounding="True"
+        WindowStartupLocation="CenterScreen"
+        WindowStyle="None"
+        mc:Ignorable="d">
+    
+    <Window.Resources>
+        <ResourceDictionary Source="Dictionary1.xaml" />
+    </Window.Resources>
+    
+    <Window.DataContext>
+        <local:SettingsDataBasesVM/>
+    </Window.DataContext>
+
+    <Grid>
+        <Border Style="{StaticResource BorderWindow}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="50" />
+                    <RowDefinition />
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+
+                <!-- Заголовок окна -->
+                <Grid Grid.Row="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBlock Grid.Column="0"
+                               Grid.ColumnSpan="3"
+                               Margin="10 0 0 0"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="16"
+                               Foreground="Black"
+                               Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}" />
+                    <Button Grid.Column="2"
+                            Command="{Binding Accept}"
+                            Style="{StaticResource CloseButtonStyle}" />
+                </Grid>
+                <Border 
+                        Style="{StaticResource BorderWindow}"
+                            Grid.Row="1"
+              Width="Auto"
+              Height="Auto"
+              Margin="5,5,5.2,4.6"
+              Background="Gray">
+                    <DockPanel VerticalAlignment="Center">
+                        <TextBlock Foreground="White"
+                                       
+                           Text="Список оборудования"
+                           TextAlignment="Center" />
+                    </DockPanel>
+                </Border>
+  
+
+                <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="0.6*"></ColumnDefinition>
+            <ColumnDefinition Width="0.4*"/>
+        </Grid.ColumnDefinitions>
+                
+                        <ListBox  HorizontalAlignment="Stretch" Margin="10" Grid.Column="0"  VerticalAlignment="Stretch" DisplayMemberPath="producer" ItemsSource="{Binding ProducerList}" 
+             SelectedItem="{Binding SelectedBD, UpdateSourceTrigger=PropertyChanged}" Style="{StaticResource RoundedListBoxStyle}" >
+        </ListBox>
+                      
+                 <Grid Grid.Column="1">
+                        <Grid.RowDefinitions>
+                                     <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition Height="50" />
+                            <RowDefinition />
+                             </Grid.RowDefinitions>
+                        <Button
+                Grid.Row="0"           
+                Width="250"
+                Height="30" 
+                Margin="10,0,10,0"
+                Command="{Binding }" 
+                Style="{StaticResource GeneralButton}"
+
+                Content="Удалить"/>
+                        <Button
+                Grid.Row="2"           
+                Width="250"
+                Height="30" 
+                Margin="10,0,10,0"
+                Command="{Binding SaveFileDialogCommand}" 
+                Style="{StaticResource GeneralButton}"
+
+                Content="Выгрузить"/>
+                        <Button 
+                Grid.Row="1"  
+                Width="250"
+                Height="30" 
+                Margin="10,0,10,0"
+                Command="{Binding OpenFileDialogCommand}" 
+                Style="{StaticResource GeneralButton}"
+
+                Content="Добавить/Обновить"/>
+                   
+                </Grid>
+                </Grid>
+
+                <Button                
+                Grid.Row="4" 
+                Grid.Column="0"
+                Width="130"
+                Height="30" 
+                Margin="0,0,0,0"
+                Command="{Binding Accept}" 
+                Style="{StaticResource GeneralButton}"
+
+                Content="Ок"/>
+          
+            </Grid>
+        </Border>
+        <!-- Resize Borders -->
+        <Border x:Name="ResizeTop"
+                Height="6"
+                Style="{StaticResource ResizeBorders}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                Cursor="SizeNS"
+                MouseDown="ResizeBorder_MouseDown" />
+        <Border x:Name="ResizeBottom"
+                Height="6"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+                
+                Style="{StaticResource ResizeBorders}"
+                Cursor="SizeNS"
+                MouseDown="ResizeBorder_MouseDown" />
+        <Border x:Name="ResizeLeft"
+                Width="6"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Stretch"
+                Style="{StaticResource ResizeBorders}"
+                Cursor="SizeWE"
+                MouseDown="ResizeBorder_MouseDown" />
+        <Border x:Name="ResizeRight"
+                Width="6"
+                Style="{StaticResource ResizeBorders}"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Stretch"
+                
+                Cursor="SizeWE"
+                MouseDown="ResizeBorder_MouseDown" />
+
+        <!-- Resize Corners -->
+        <Border x:Name="ResizeTopLeft"
+                Width="6"
+                Height="6"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Style="{StaticResource ResizeBorders}"
+                Cursor="SizeNWSE"
+                MouseDown="ResizeBorder_MouseDown" />
+        <Border x:Name="ResizeTopRight"
+                Width="6"
+                Height="6"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Style="{StaticResource ResizeBorders}"
+                Cursor="SizeNESW"
+                MouseDown="ResizeBorder_MouseDown" />
+        <Border x:Name="ResizeBottomLeft"
+                Width="6"
+                Height="6"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Style="{StaticResource ResizeBorders}"
+                Cursor="SizeNESW"
+                MouseDown="ResizeBorder_MouseDown" />
+        <Border x:Name="ResizeBottomRight"
+                Width="6"
+                Height="6"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Style="{StaticResource ResizeBorders}"
+                Cursor="SizeNWSE"
+                MouseDown="ResizeBorder_MouseDown" />
+
+    </Grid>
+</Window>

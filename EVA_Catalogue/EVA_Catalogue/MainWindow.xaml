@@ -1,168 +1,335 @@
 ﻿<Window x:Class="EVA_Catalogue.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"        
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:viewmodel="clr-namespace:EVA_Catalogue"  
-        
+        xmlns:viewmodel="clr-namespace:EVA_Catalogue"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:EVA_Catalogue"
-        mc:Ignorable="d"
+        Title="Подбор оборудования"
+        Width="800"
+        Height="800"
+        MinWidth="700"
+        MinHeight="650"
+        AllowsTransparency="True"
+        Background="Transparent"
+        FontFamily="{materialDesign:NotoFont}"
+        ResizeMode="CanResize"
+        TextElement.FontSize="14"
+        TextElement.FontWeight="Regular"
+        TextOptions.TextFormattingMode="Ideal"
+        TextOptions.TextRenderingMode="Auto"
+        UseLayoutRounding="True"
         WindowStartupLocation="CenterScreen"
-        Title="Подбор оборудования" Height="500" Width="900"
-        ResizeMode="NoResize">
+        WindowStyle="None"
+        mc:Ignorable="d">
 
     <Window.Resources>
         <ResourceDictionary Source="Dictionary1.xaml" />
-
     </Window.Resources>
+
     <Window.DataContext>
-        <local:MainViewModel/>
+        <local:MainViewModel />
     </Window.DataContext>
 
     <Grid>
-        <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition Height="50"></RowDefinition>
-        </Grid.RowDefinitions>
-        <TabControl Grid.Row="0">
-            <TabItem Header="Подбор оборудования">
-                <Grid>
+        <Border Style="{StaticResource BorderWindow}">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="50" />
+                    <RowDefinition Height="50" />
+                    <RowDefinition />
+                    <RowDefinition Height="50" />
+                </Grid.RowDefinitions>
+
+                <!-- Заголовок окна -->
+                <Grid Grid.Row="0">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="317*"/>
-                        <ColumnDefinition Width="577*"/>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition ></RowDefinition>
-                        <RowDefinition Height="50"></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="0" Grid.ColumnSpan="2" Margin="0,0,-0.4,0.2">
-                        <Grid.RowDefinitions>
-                            <RowDefinition ></RowDefinition>
-                            <RowDefinition Height="50"></RowDefinition>
-                            <RowDefinition Height="50"></RowDefinition>
-                            <RowDefinition ></RowDefinition>
-                        </Grid.RowDefinitions>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="298*"></ColumnDefinition>
-                            <ColumnDefinition Width="55*"></ColumnDefinition>
-                            <ColumnDefinition Width="541*"/>
-                        </Grid.ColumnDefinitions>
 
-                        <TextBlock  
-                        Grid.Row="1"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        TextAlignment ="Right"
-                        VerticalAlignment="Center" Margin="0,17,54.9,16.6">
-                        Производитель:
-                        </TextBlock>
-                        <TextBlock  
-                        Grid.Row="2"
-                        Grid.Column="0"
-                        Grid.ColumnSpan="2"
-                        TextAlignment ="Right"
-                        VerticalAlignment="Center" Margin="0,16.4,54.9,17.2">
-                        Серия:
-                        </TextBlock>
-                        <ComboBox 
-                        Name="produserComboBox"
-                        DisplayMemberPath="producer"    
-                        ItemsSource="{Binding ProducerList}"
-                        SelectedItem="{Binding SelectedProducer, UpdateSourceTrigger=PropertyChanged}" 
-                        Grid.Row="1"
-                        Grid.Column="1"
-                        Width="200"    
-                        HorizontalAlignment="Left"
-                        Margin="20.4,14,0,13.6"
-                        VerticalAlignment="Center" Grid.ColumnSpan="2">
-                            <ComboBox.Style>
-                                <Style TargetType="ComboBox">
+                    <TextBlock Grid.Column="0"
+                               Grid.ColumnSpan="3"
+                               Margin="10 0 0 0"
+                               HorizontalAlignment="Center"
+                               VerticalAlignment="Center"
+                               FontSize="16"
+                               Foreground="Black"
+                               Text="{Binding Title, RelativeSource={RelativeSource AncestorType=Window}}" />
 
-                                </Style>
-                            </ComboBox.Style>
-
-                        </ComboBox>
-                        <ComboBox 
-                        Name="seriesComboBox"
-                        ItemsSource="{Binding SeriesList}"
-                        SelectedItem="{Binding SelectedSeries, UpdateSourceTrigger=PropertyChanged}"   
-                            
-                        Grid.Row="2"
-                        Grid.Column="1"
-                        Width="200"    
-                        HorizontalAlignment="Left"
-                        Margin="20.4,13.4,0,13.2"
-                        VerticalAlignment="Center"
-                        DisplayMemberPath="series" Grid.ColumnSpan="2">
-                            <ComboBox.Style>
-                                <Style TargetType="ComboBox">
-                                    <Style.Triggers>
-                                        <DataTrigger Value="{x:Null}" Binding="{Binding SelectedProducer, UpdateSourceTrigger=PropertyChanged}">
-                                            <Setter Property="IsEnabled" Value="False"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </ComboBox.Style>
-                        </ComboBox>
-                    </Grid>
-
-                    <Button 
-                    Grid.Row="1" 
-                    Width="300"
-                    Height="30" 
-                    Margin="302,9.8,291.6,9.8"
-                    Command="{Binding EquipmentSelection}" 
-                    Content="Выполнить подбор оборудования" Grid.ColumnSpan="2"/>
-
+                    <Button Grid.Column="2"
+                            Command="{Binding Cancel}"
+                            Style="{StaticResource CloseButtonStyle}" />
                 </Grid>
-            </TabItem>
-            <TabItem Header="Настройки подбора оборудования">
-                <Grid>
+
+                <Grid Grid.Row="1">
+                    <Button HorizontalAlignment="Right"
+                            VerticalAlignment="Center"
+                            Width="300"
+                            Height="30"
+                            Margin="0,0,10,0"
+                            Command="{Binding OpenWindowSettingsDataBasesCommand}"
+                            Style="{StaticResource GeneralButton}"
+                            Content="Загрузить/Выгрузить каталоги" />
+                </Grid>
+                <Grid Grid.Row="2">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
-                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto" MinWidth="75" />
+                        <ColumnDefinition />
+                        <ColumnDefinition Width="Auto" />
                     </Grid.ColumnDefinitions>
-                    <Grid.RowDefinitions>
-                        <RowDefinition ></RowDefinition>
-                        <RowDefinition Height="50"></RowDefinition>
-                        <RowDefinition Height="50"></RowDefinition>
-                        <RowDefinition Height="50"></RowDefinition>
-                        <RowDefinition ></RowDefinition>
-                    </Grid.RowDefinitions>
-                    <Grid Grid.Row="1" Grid.Column="1" Grid.ColumnSpan="1" Margin="5,0,0,0">
-                        <CheckBox x:Name="checkBox1" IsThreeState="False" HorizontalAlignment="Left" IsChecked="False" Height="20" Content="Поиск по всем сериям" />                        
-                    </Grid>
-                    <Grid Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="1" Margin="5,0,0,0">
-                        <CheckBox x:Name="checkBox2" IsThreeState="False" IsChecked="False" Height="20" Content="Поиск по всем производителям" />
-                    </Grid>
-                    <Grid Grid.Row="3" Grid.Column="1" Grid.ColumnSpan="1" Margin="5,0,0,0">
-                        <CheckBox x:Name="checkBox3" IsThreeState="False" IsChecked="False" Height="20" Content="Учитывать стоимость" />
-                    </Grid>
+                    <Border 
+                        Style="{StaticResource BorderWindow}"
+                            Grid.Column="0"
+              Width="Auto"
+              Height="Auto"
+              Margin="10,5,5,5"
+              Background="Gray">
+                        <DockPanel VerticalAlignment="Center">
+                            <TextBlock Foreground="White"
+                                       
+                           Text="Вкл."
+                           TextAlignment="Center" />
+                        </DockPanel>
+                    </Border>
+                    <Border 
+                        Style="{StaticResource BorderWindow}"
+                        Grid.Column="1"
+                  Width="Auto"
+              Height="Auto"
+              Margin="5,5,10,5"
+              Background="Gray">
+                        <DockPanel VerticalAlignment="Center">
+                            <TextBlock Foreground="White"
+                           Text="Тип оборудования"
+                           TextAlignment="Center" />
+                        </DockPanel>
+                    </Border>
                 </Grid>
-            </TabItem>
+                <Grid Grid.Row="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="70" />
+                        <RowDefinition Height="70" />
+                        <RowDefinition Height="70" />
+                        <RowDefinition Height="70" />
+                        <RowDefinition Height="70" />
+                        <RowDefinition Height="70" />
+                        <RowDefinition Height="70" />
+                        <RowDefinition Height="70" />
+                        <RowDefinition />
+                    </Grid.RowDefinitions>
 
-        </TabControl>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
 
-        <DockPanel Grid.Row="1">
-            <Button DockPanel.Dock="Left"
-                Grid.Row="1" 
-                Width="130"
-                Height="30" 
-                Margin="10,10,0,10"
-                Command="{Binding Accept}" 
-                Content="OK"/>
 
-            <Button DockPanel.Dock="Right"
+
+                    <ToggleButton Grid.Row="0"
+                                  Grid.Column="0"
+                                  Margin="10"
+                                  HorizontalAlignment="Left"
+                                  IsThreeState="False"
+                                  Name="btnBold1"
+                                  IsChecked="False">
+                        <Image Width="16" Height="16" />
+                    </ToggleButton>
+
+                    <Button Grid.Row="0"
+                            Grid.Column="1"
+                            Height="Auto"
+                            Margin="10"
+                            Style="{StaticResource TransparentIconButton}"
+                            Command="{Binding OpenWindowSettingsModularCircuitBreakersCommand}"
+                            Content="Модульный автоматический выключатель" />
+
+                    <ToggleButton Grid.Row="1"
+                                  Grid.Column="0"
+                                  Margin="10"
+                                  HorizontalAlignment="Left"
+                                  IsThreeState="False"
+                                  Name="btnBold2"
+                                  IsChecked="False">
+                        <Image Width="16" Height="16" />
+                    </ToggleButton>
+
+                    <Button Grid.Row="1"
+                            Grid.Column="1"
+                            Height="Auto"
+                            Margin="10"
+                            Style="{StaticResource TransparentIconButton}"
+                            Command="{Binding OpenWindowSettingsModularResidualCurrentBreakersCommand}"
+                            Content="Модульный автоматический выключатель дифференциального тока" />
+
+                    <ToggleButton Grid.Row="2"
+                                  Grid.Column="0"
+                                  Margin="10"
+                                  HorizontalAlignment="Left"
+                                  IsThreeState="False"
+                                  Name="btnBold3"
+                                  IsChecked="False">
+                        <Image Width="16" Height="16" />
+                    </ToggleButton>
+
+                    <Button Grid.Row="2"
+                            Grid.Column="1"
+                            Height="Auto"
+                            Margin="10"
+                            Style="{StaticResource TransparentIconButton}"
+                            Command="{Binding OpenWindowSettingsModularResidualCurrentBreakersCommand}"
+                            Content="Устройство защитного отключения" />
+                    
+                    <ToggleButton Grid.Row="3"
+                                  Grid.Column="0"
+                                  Margin="10"
+                                  HorizontalAlignment="Left"
+                                  IsThreeState="False"
+                                  Name="btnBold4"
+                                  IsChecked="False">
+                        <Image Width="16" Height="16" />
+                    </ToggleButton>
+
+                    <Button Grid.Row="3"
+                            Grid.Column="1"
+                            Height="Auto"
+                            Margin="10"
+                            Style="{StaticResource TransparentIconButton}"
+                            Command="{Binding OpenWindowSettingsModularResidualCurrentBreakersCommand}"
+                            Content="Контактор" />
+
+                    <ToggleButton Grid.Row="4"
+                                  Grid.Column="0"
+                                  Margin="10"
+                                  HorizontalAlignment="Left"
+                                  IsThreeState="False"
+                                  Name="btnBold5"
+                                  IsChecked="False">
+                        <Image Width="16" Height="16" />
+                    </ToggleButton>
+
+                    <Button Grid.Row="4"
+                            Grid.Column="1"
+                            Height="Auto"
+                            Margin="10"
+                            Style="{StaticResource TransparentIconButton}"
+                            Command="{Binding OpenWindowSettingsModularResidualCurrentBreakersCommand}"
+                            Content="Предохранитель (плавкая вставка)" />
+                    <ToggleButton Grid.Row="5"
+                                  Grid.Column="0"
+                                  Margin="10"
+                                  HorizontalAlignment="Left"
+                                  IsThreeState="False"
+                                  Name="btnBold6"
+                                  IsChecked="False">
+                        <Image Width="16" Height="16" />
+                    </ToggleButton>
+
+                    <Button Grid.Row="5"
+                            Grid.Column="1"
+                            Height="Auto"
+                            Margin="10"
+                            Style="{StaticResource TransparentIconButton}"
+                            Command="{Binding OpenWindowSettingsModularResidualCurrentBreakersCommand}"
+                            Content="Устройство защиты от дугового пробоя" />
+                </Grid>
+
+                <Grid Grid.Row="4">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <Button HorizontalAlignment="Right"
+                            Grid.Column="0"
+                            Width="130"
+                            Height="30"
+                            Margin="0,0,10,0"
+                            Command="{Binding EquipmentSelection}"
+                            Style="{StaticResource GeneralButton}"
+                            Content="Выполнить" />
+
+                    <Button HorizontalAlignment="Left"
+                            Grid.Column="1"
+                            Width="130"
+                            Height="30"
+                            Margin="10,0,0,0"
+                            Command="{Binding Accept}"
+                            Style="{StaticResource GeneralButton}"
+                            Content="Сохранить" />
+                </Grid>
+            </Grid>
+        </Border>
+        <!-- Resize Borders -->
+        <Border x:Name="ResizeTop"
+                Height="6"
+                Style="{StaticResource ResizeBorders}"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Top"
+                Cursor="SizeNS"
+                MouseDown="ResizeBorder_MouseDown" />
+        <Border x:Name="ResizeBottom"
+                Height="6"
+                HorizontalAlignment="Stretch"
+                VerticalAlignment="Bottom"
+                
+                Style="{StaticResource ResizeBorders}"
+                Cursor="SizeNS"
+                MouseDown="ResizeBorder_MouseDown" />
+        <Border x:Name="ResizeLeft"
+                Width="6"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Stretch"
+                Style="{StaticResource ResizeBorders}"
+                Cursor="SizeWE"
+                MouseDown="ResizeBorder_MouseDown" />
+        <Border x:Name="ResizeRight"
+                Width="6"
+                Style="{StaticResource ResizeBorders}"
                 HorizontalAlignment="Right"
-                Grid.Row="1"
-                Height="30" 
-                Width="130"
-                Margin="10,10,10,10" 
-                Command="{Binding Cancel}" 
-                Content="Cancel" 
-                IsCancel="True"/>
-        </DockPanel>
+                VerticalAlignment="Stretch"
+                
+                Cursor="SizeWE"
+                MouseDown="ResizeBorder_MouseDown" />
+
+        <!-- Resize Corners -->
+        <Border x:Name="ResizeTopLeft"
+                Width="6"
+                Height="6"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Style="{StaticResource ResizeBorders}"
+                Cursor="SizeNWSE"
+                MouseDown="ResizeBorder_MouseDown" />
+        <Border x:Name="ResizeTopRight"
+                Width="6"
+                Height="6"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Top"
+                Style="{StaticResource ResizeBorders}"
+                Cursor="SizeNESW"
+                MouseDown="ResizeBorder_MouseDown" />
+        <Border x:Name="ResizeBottomLeft"
+                Width="6"
+                Height="6"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Style="{StaticResource ResizeBorders}"
+                Cursor="SizeNESW"
+                MouseDown="ResizeBorder_MouseDown" />
+        <Border x:Name="ResizeBottomRight"
+                Width="6"
+                Height="6"
+                HorizontalAlignment="Right"
+                VerticalAlignment="Bottom"
+                Style="{StaticResource ResizeBorders}"
+                Cursor="SizeNWSE"
+                MouseDown="ResizeBorder_MouseDown" />
+
 
     </Grid>
 </Window>

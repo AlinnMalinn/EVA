@@ -5,10 +5,15 @@ namespace EVA_Catalogue
 {
     class EquipmentSelection
     {
-        public void selectDevicecs(string ProducerName, int seriesID)
+        //const string PathToExcel = @"C:\Users\79126\Desktop\TEST.xlsm";
+        //const string Page = "EVA_1РП1";
+        //const string TableNameModularCircuitBreakers = @"[Модульные автоматические выключатели]";
+        //const string TableNameModularResidualCurrentCircuitBreakers = @"[Модульные автоматические выключатели дифференциального тока]";
+
+        public void SelectDevicecs(string producerName, int seriesID)
         {
             // получение массива данных из листа Excel
-            ExcelHelper excel = new ExcelHelper(@"C:\Users\79126\Desktop\TEST.xlsm", "EVA_1РП1");  
+            ExcelHelperForEva excel = new ExcelHelperForEva(MainViewModel.SourceDirectoryExcel, MainViewModel.ExcelPage);  
             object[][] dataFromExcelPage = excel.GetListDevice1FromExcel(); 
             DBHelper dBHelper = new DBHelper();
             int amountOfGroups = dataFromExcelPage.Length;
@@ -18,12 +23,12 @@ namespace EVA_Catalogue
             for (int i = 0; i < amountOfGroups; i++) 
             {
                 object typeOfDevice = dataFromExcelPage[i][0]; //переменные для поиска в БД
-                object ratedСurrent = dataFromExcelPage[i][1];
+                object ratedCurrent = dataFromExcelPage[i][1];
                 object numberOfPoles = dataFromExcelPage[i][2];
                 object maximumBreakingCapacity = dataFromExcelPage[i][3];
                 object responseCharacteristics = dataFromExcelPage[i][4];
                 object thermalOverloadRelease = dataFromExcelPage[i][5];
-                object leakageСurrent ="";
+                object leakageCurrent ="";
                 object additionalDevice11;
                 object ratedСurrentOfMouldedCase;
                 if (dataFromExcelPage[i].Length == 7)
@@ -33,43 +38,51 @@ namespace EVA_Catalogue
                 else if (dataFromExcelPage[i].Length == 9)
                 {
                     ratedСurrentOfMouldedCase = dataFromExcelPage[i][7];
-                    leakageСurrent = dataFromExcelPage[i][8];
+                    leakageCurrent = dataFromExcelPage[i][8];
                 }
                 DataSet ds = new DataSet();
-                string bdName = ProducerName;
+                string bdName = producerName;
                 // поиск модульного диф автомата в БД выбранного производителя и выбранной серии
                 if (typeOfDevice.ToString().Contains("дифференциального")) 
                 {
-                    string tableName = @"[Модульные автоматические выключатели дифференциального тока]";
-                    ds = dBHelper.GetDeviceDataFromDB2(bdName, tableName, seriesID, ratedСurrent, numberOfPoles, responseCharacteristics, maximumBreakingCapacity, thermalOverloadRelease, leakageСurrent);
+                    string tableName = MainViewModel.TableNameModularResidualCurrentCircuitBreakers;
+                    ds = dBHelper.GetDeviceDataFromDB2(bdName, tableName, seriesID, ratedCurrent, numberOfPoles, responseCharacteristics, maximumBreakingCapacity, thermalOverloadRelease, leakageCurrent);
                 }
                 //поиск модульного автомата в БД выбранного производителя и выбранной серии
                 else if (typeOfDevice.ToString().Contains("втоматический выключатель")) 
                 {
-                    string tableName = @"[Модульные автоматические выключатели]";
-                    ds = dBHelper.GetDeviceDataFromDB1(bdName, tableName, seriesID, ratedСurrent, numberOfPoles, responseCharacteristics, maximumBreakingCapacity, thermalOverloadRelease);
+                    string tableName = MainViewModel.TableNameModularCircuitBreakers;
+                    ds = dBHelper.GetDeviceDataFromDB1(bdName, tableName, seriesID, ratedCurrent, numberOfPoles, responseCharacteristics, maximumBreakingCapacity, thermalOverloadRelease);
                 }
                 
                 DataTable dtP = new DataTable();
                 dtP = ds.Tables[0];
+                
                 //заполнение списков для вывода в Excel
-                if (dtP.Rows.Count != 0) 
-                {
-                  DataRow dr = dtP.NewRow();
-                  dr = dtP.Rows[0];
-                  string nameOfDevice = dr["NameD"].ToString();
-                  nameOfDeviceList.Add(nameOfDevice);
-                  string codeOfDevice = dr["Code"].ToString();
-                  codeOfDeviceList.Add(codeOfDevice);
-                }
-                else
-                {
-                  nameOfDeviceList.Add("Устройство не найдено");
-                  codeOfDeviceList.Add("");
-                }                   
+                nameOfDeviceList.Add(DataForExcel(dtP)[0]);
+                codeOfDeviceList.Add(DataForExcel(dtP)[1]);                                   
             }
             //вывод в Excel
-            excel.WhriteDevice1DataToExcel(ProducerName, codeOfDeviceList, nameOfDeviceList);
+            excel.WhriteDevice1DataToExcel(producerName, codeOfDeviceList, nameOfDeviceList);
+        }
+        private List <string> DataForExcel(DataTable tableFromDB)
+        {
+            List<string> deviceDataForExsel = new List<string>();
+            if (tableFromDB.Rows.Count != 0)
+            {
+                DataRow dr = tableFromDB.NewRow();
+                dr = tableFromDB.Rows[0];
+                string nameOfDevice = dr["NameD"].ToString();
+                deviceDataForExsel.Add(nameOfDevice);
+                string codeOfDevice = dr["Code"].ToString();
+                deviceDataForExsel.Add(codeOfDevice);
+            }
+            else
+            {
+                deviceDataForExsel.Add("Устройство не найдено");
+                deviceDataForExsel.Add("");
+            }
+            return deviceDataForExsel;
         }
     }
 }

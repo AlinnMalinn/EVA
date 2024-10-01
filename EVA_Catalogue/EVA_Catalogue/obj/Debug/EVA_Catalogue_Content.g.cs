@@ -11,6 +11,8 @@
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("dkc.mdf")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("dkc_log.ldf")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("iek.mdf")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("ieknew.mdf")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("ieknew_log.ldf")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("iek_log.ldf")]
 
 

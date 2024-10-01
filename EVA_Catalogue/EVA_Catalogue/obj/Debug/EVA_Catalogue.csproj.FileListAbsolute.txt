@@ -32,3 +32,12 @@ C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\DKC.mdf
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\DKC_log.ldf
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEK.mdf
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEK_log.ldf
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\WindowSettingsModularCircuitBreakers.g.cs
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\WindowSettingsModularCircuitBreakers.baml
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\WindowSettingsModularResidualCurrentBreakers.g.cs
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\WindowSettingsModularResidualCurrentBreakers.baml
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\WindowSettingsDataBases.g.cs
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\WindowSettingsDataBases.baml
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKnew.mdf
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKnew_log.ldf
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\Dictionary1.g.cs
