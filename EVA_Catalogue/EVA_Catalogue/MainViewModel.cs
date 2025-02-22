@@ -19,8 +19,8 @@ namespace EVA_Catalogue
         public const string SourceDirectoryDB = @"C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue";
         public const string SourceDirectoryDB2 = "C:\\Users\\79126\\source\\EVA\\EVA_Catalogue\\EVA_Catalogue";
         public const string SourceDirectorySettings = @"C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\Settings.txt";
-        public const string SourceDirectoryExcel = @"C:\Users\79126\Desktop\TEST.xlsm";
-        public const string ExcelPage = "EVA_1РП1";
+        public const string SourceDirectoryExcel = @"C:\Users\79126\Desktop\EVA\TEST2.xlsm";
+        //public const string ExcelPage = "EVA_1РП1";
 
         public const string TableNameModularCircuitBreakers = @"[Модульные автоматические выключатели]";
         public const string TableNameModularResidualCurrentCircuitBreakers = @"[Модульные автоматические выключатели дифференциального тока]";
@@ -28,21 +28,24 @@ namespace EVA_Catalogue
         public const string ModularCircuitBreakersSettings = "ModularCircuitBreakers";
         public const string ModularResidualCurrentCircuitBreakersSettings = "ModularResidualCurrentCircuitBreakers";
 
-
-
-
-
         public event PropertyChangedEventHandler PropertyChanged;  
        
-
         private void NotifyPropertyChanged([CallerMemberName] string name = "")
         {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(name));
         }
+        public bool isAutomaticSelectionEnabledForModularCircuitBreakers;
+        public bool IsAutomaticSelectionEnabledForModularCircuitBreakers
+        {
+            get { return isAutomaticSelectionEnabledForModularCircuitBreakers; }
 
-
-
-
+            set
+            {
+                isAutomaticSelectionEnabledForModularCircuitBreakers = value;
+                NotifyPropertyChanged("isAutomaticSelectionEnabledForModularCircuitBreakers");
+            }
+        }
+        
         public MainViewModel()
         {
             Accept = new RelayCommand(param => OkCommand()); //проброс команды
@@ -52,10 +55,8 @@ namespace EVA_Catalogue
             OpenWindowSettingsModularCircuitBreakersCommand = new RelayCommand(param => OpenWindowSettingsModularCircuitBreakers());
             OpenWindowSettingsModularResidualCurrentBreakersCommand = new RelayCommand(param => OpenWindowSettingsModularResidualCurrentBreakers());
             OpenWindowSettingsDataBasesCommand = new RelayCommand(param => OpenWindowSettingsDataBases());
-
         }
-
-   
+           
         private void CancelCommand()
         {
             Application.Current.MainWindow.Close();
@@ -68,71 +69,58 @@ namespace EVA_Catalogue
         private void SayResult() // подбор оборудования и вывод результатов
 
         {
-          
-                List<string> producerListForSettings = new List<string>();
-                List<string> seriesListForSettings = new List<string>();
-                int seriesID = new int();
+            if (IsAutomaticSelectionEnabledForModularCircuitBreakers == true)
+            {
+                MessageBox.Show("Проверка положительная");
+            }
+            else
+            {
+                MessageBox.Show("Проверка отрицательная");
+            }
+            List<string> producerListForSettings = new List<string>();
+            List<string> seriesListForSettings = new List<string>();
+            List<string> producerForSeriesListForSettings = new List<string>();
             if (File.Exists(MainViewModel.SourceDirectorySettings))
                 try
                 {
                     using (StreamReader reader = new StreamReader(MainViewModel.SourceDirectorySettings))
                     {
-
                         string line;
-
                         while ((line = reader.ReadLine()) != null)
                         {
                             if (line.Split('%')[0] == MainViewModel.ModularCircuitBreakersSettings)
                             {
-
                                 string lineWhithProducers = line.Split('%')[1];
                                 string lineWhithSries = line.Split('%')[2];
 
                                 foreach (string subLine in lineWhithProducers.Split('#'))
                                 {
-
                                     producerListForSettings.Add(subLine);
-
                                 }
                                 foreach (string subLine in lineWhithSries.Split('#'))
                                 {
-
+                                    //producerForSeriesListForSettings.Add(subLine.Split(':')[0]);
                                     seriesListForSettings.Add(subLine);
-
                                 }
+                            }
+                        }
 
-                            }
-                        }
-                        DBHelper dBHelper = new DBHelper();
-                        DataSet dsS = dBHelper.GetSeriesDataFromDBforSettings(producerListForSettings[0], seriesListForSettings[0].Split(':')[1]);
-                        DataTable dtS = new DataTable();
-                        dtS = dsS.Tables[0];
-                        for (int i = 0; i < dtS.Rows.Count; i++)
-                        {
-                            
-                            DataRow dr = dtS.NewRow();
-                            dr = dtS.Rows[i];
-                            if ((int)dr["id"] > 0)
-                            {
-                                seriesID = (int)dr["id"];
-                                break;
-                            }
-                  
-                        }
-                        EquipmentSelection es = new EquipmentSelection();
-                                  es.SelectDevicecs(producerListForSettings[0], seriesID);
-                                   MessageBox.Show("Оборудование подобрано");
+                        
+                            EquipmentSelection es = new EquipmentSelection();
+                            es.SelectDevicecs_ModularCircuitBreaker(producerListForSettings, seriesListForSettings);
+                        
+                        MessageBox.Show("Оборудование подобрано");
                     }
                 }
-                catch
+                catch (Exception ex)
                 {
-                    MessageBox.Show("Возникла ошибка =(");
+                    MessageBox.Show("Error: " + ex.Message);
                 }
-        //    if ((selectedProducer == null) & (selectedSeries == null))
-        //    {
-        //        MessageBox.Show("Производитель оборудования не выбран");
-        //    }
-                else
+            //    if ((selectedProducer == null) & (selectedSeries == null))
+            //    {
+            //        MessageBox.Show("Производитель оборудования не выбран");
+            //    }
+            else
                 {
                 MessageBox.Show("Производители и серии оборудования не выбраны, настройте параметры подбора");
             }

@@ -47,7 +47,7 @@ namespace EVA_Catalogue
             {
                 selectedBD = value;
                 NotifyPropertyChanged("SelectedBD");
-                //SeriesList = CreateSeriesList();
+
             }
         }
         public SettingsDataBasesVM()
@@ -58,8 +58,9 @@ namespace EVA_Catalogue
             //Cancel = new RelayCommand(param => CancelCommand());
             OpenFileDialogCommand = new RelayCommand(param => OpenFileDialog());
             SaveFileDialogCommand = new RelayCommand(param => SaveFileDialog());
+            Delete = new RelayCommand(param => DeleteCommand());
         }
-        private List<ProducerModel> CreateProducerList() // формирование списка производителей для ComboBox
+        private List<ProducerModel> CreateProducerList() // формирование списка БД для ComboBox
         {
             producerList = new List<ProducerModel>();
             foreach (string file in Directory.EnumerateFiles(MainViewModel.SourceDirectoryDB, "*.mdf"))
@@ -142,10 +143,18 @@ namespace EVA_Catalogue
             }
         
         }
+        private void DeleteCommand()
+        {
+            DBHelper dBHelper = new DBHelper();
+            dBHelper.AddDataBase(selectedBD.producer);
+            //dBHelper.ToFullFillDataBase(selectedFile);
+            CreateProducerList();
+        }
 
         public ICommand Accept { get; }
         //public ICommand Cancel { get; }
         public ICommand OpenFileDialogCommand { set; get; }
         public ICommand SaveFileDialogCommand { set; get; }
+        public ICommand Delete { set; get; }
     }
 }

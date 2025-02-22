@@ -136,7 +136,7 @@
                                   HorizontalAlignment="Left"
                                   IsThreeState="False"
                                   Name="btnBold1"
-                                  IsChecked="False">
+                                  IsChecked="{Binding IsAutomaticSelectionEnabledForModularCircuitBreakers, Mode=TwoWay}">
                         <Image Width="16" Height="16" />
                     </ToggleButton>
 

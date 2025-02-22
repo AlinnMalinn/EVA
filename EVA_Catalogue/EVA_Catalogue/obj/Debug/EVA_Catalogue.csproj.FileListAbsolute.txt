@@ -41,3 +41,9 @@ C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\WindowSettingsDa
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKnew.mdf
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKnew_log.ldf
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\Dictionary1.g.cs
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKnew123.mdf
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKnew123_log.ldf
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKtest1.mdf
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKtest1_log.ldf
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKtest2.mdf
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKtest2_log.ldf

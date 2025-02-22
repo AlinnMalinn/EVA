@@ -14,5 +14,6 @@ namespace EVA_Catalogue
         public string series { get; set; }
         public int seriesID { get; set; }
         public int producerName { get; set; }
+        //public bool isAutomaticSelectionEnabledForModularCircuitBreakers { get; set; }
     }
 }

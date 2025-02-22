@@ -179,35 +179,12 @@ namespace EVA_Catalogue
             {
                 foreach (ProducerModel newSeries in newSeriesList)
                 {
-                    seriesListForSettings.Add(newSeries.series.ToString());
+                    seriesListWhithProducersForSettings.Add(newSeries.series.ToString());
                 }
             }
             else
             {
                 seriesListForSettings.Add("%");
-            }
-            DBHelper dBHelper = new DBHelper();
-            if (seriesListForSettings[0] != "%")
-            {
-                foreach (string series in seriesListForSettings)
-                {
-                    foreach (string producer in producerListForSettings)
-                    {
-                        DataSet dsS = dBHelper.GetSeriesDataFromDBforSettings(producer, series);
-                        DataTable dtS = new DataTable();
-                        dtS = dsS.Tables[0];
-
-                        if (dtS.Rows.Count > 0)
-                        {
-                            seriesListWhithProducersForSettings.Add(producer + ":" + series);
-                            //break;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                seriesListWhithProducersForSettings.Add("%");
             }
             string producerSrtingForSettings = string.Join("#", producerListForSettings);
             string seriesSrtingForSettings = string.Join("#", seriesListWhithProducersForSettings);
@@ -262,10 +239,10 @@ namespace EVA_Catalogue
                     {
                         foreach (ProducerModel seriesFromDB in seriesList)
                         {
-                            if (seriesForSettings.Split(':')[1] == seriesFromDB.series)
+                            if (seriesForSettings == seriesFromDB.series)
                             {
                                 ProducerModel producerModel = new ProducerModel();
-                                producerModel.series = seriesForSettings.Split(':')[1].ToString();
+                                producerModel.series = seriesForSettings.ToString();
                                 NewSeriesList.Add(producerModel);
                                 break;
                             }
@@ -467,7 +444,7 @@ namespace EVA_Catalogue
             seriesList = new List<ProducerModel>();
             foreach (ProducerModel newProducer in newProducerList)
             {
-                DataSet dsS = dBHelper.GetSeriesDataFromDB(newProducer.producer);
+                DataSet dsS = dBHelper.GetSeriesDataFromDB(newProducer.producer, MainViewModel.TableNameModularCircuitBreakers);
                 DataTable dtS = new DataTable();
                 dtS = dsS.Tables[0];    
 
@@ -476,8 +453,8 @@ namespace EVA_Catalogue
                     DataRow dr = dtS.NewRow();
                     dr = dtS.Rows[i];
                     ProducerModel producerModel = new ProducerModel();
-                    producerModel.series = dr["SeriesName"].ToString();
-                    producerModel.seriesID = (int)dr["id"];
+                    producerModel.series = newProducer.producer+":" + dr["SeriesName"].ToString();
+                    //producerModel.seriesID = (int)dr["id"];
                     SeriesList.Add(producerModel);
                 }
             }

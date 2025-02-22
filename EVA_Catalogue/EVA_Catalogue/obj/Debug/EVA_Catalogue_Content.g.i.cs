@@ -12,7 +12,13 @@
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("dkc_log.ldf")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("iek.mdf")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("ieknew.mdf")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("ieknew123.mdf")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("ieknew123_log.ldf")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("ieknew_log.ldf")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("iektest1.mdf")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("iektest1_log.ldf")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("iektest2.mdf")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("iektest2_log.ldf")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("iek_log.ldf")]
 
 
