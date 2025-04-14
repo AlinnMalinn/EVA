@@ -1,21 +1,34 @@
-﻿using System;
+﻿using Microsoft.Office.Interop.Excel;
+using System;
 using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.IO;
 using System.Windows;
+using DataTable = System.Data.DataTable;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace EVA_Catalogue
 {
     class DBHelper
     {
-
-        private string CnnStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + MainViewModel.SourceDirectoryDB + @"\";
+              
+        //private string CnnStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + MainViewModel.SourceDirectoryDB + @"\";
+        private string CnnStr;
         string connectionString = @"Data Source = (LocalDB)\MSSQLLocalDB; Integrated Security = True";
+        PathHelper pathHelper;
+        string sourceDirectoryDB;
+        //string comandSelect;
+        public DBHelper()
+        {
+            PathHelper pathHelper = new PathHelper();
+            sourceDirectoryDB = pathHelper.PathDBHelper();
+            CnnStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + sourceDirectoryDB + @"\";
+        }
 
         public DataSet GetSeriesDataFromDB(string dbName, string tableName)
         {
+
             string comandSelect = "select DISTINCT SeriesName from "+ tableName;
             DataSet ds = new DataSet();
             using (SqlConnection connection = new SqlConnection(CnnStr + dbName + ".mdf; Integrated Security = True"))
@@ -68,13 +81,24 @@ namespace EVA_Catalogue
             }
             return ds;
         }
-        public DataSet GetDeviceDataFromDB2(string dbName, string tableName, int SeriesID, object RatedCurrent, object NumberOfPoles, object ResponseCharacteristics, object MaximumBreakingCapacity, object ThermalOverloadRelease, object leakageСurrent)
+        public DataSet GetDeviceQFDDataFromDBbyDBNameSeriesName(string dbName, string tableName, string SeriesName, object RatedCurrent, object NumberOfPoles, object ResponseCharacteristics, object MaximumBreakingCapacity, object ThermalOverloadRelease, object leakageСurrent)
         {
             DataSet ds = new DataSet();
             using (SqlConnection connection = new SqlConnection(CnnStr + dbName + ".mdf; Integrated Security = True"))
             {
                 SqlDataAdapter dataAdapter = new SqlDataAdapter();
-                dataAdapter.SelectCommand = new SqlCommand("select * from " + tableName + " WHERE SeriesID LIKE '" + SeriesID + "' AND RatedСurrent = '" + RatedCurrent.ToString().Replace(',', '.') + "' AND NumberOfPoles LIKE '" + NumberOfPoles + "' AND ResponseCharacteristics LIKE '" + ResponseCharacteristics + "' AND ThermalOverloadRelease LIKE '" + ThermalOverloadRelease + "' AND MaximumBreakingCapacity >= '" + MaximumBreakingCapacity.ToString().Replace(',', '.') + "' AND LeakageСurrent = '" + leakageСurrent.ToString().Replace(',', '.') + "' order by MaximumBreakingCapacity ", connection);
+                dataAdapter.SelectCommand = new SqlCommand("select * from " + tableName + " WHERE SeriesName LIKE '" + SeriesName + "' AND RatedСurrent = '" + RatedCurrent.ToString().Replace(',', '.') + "' AND NumberOfPoles LIKE '" + NumberOfPoles + "' AND ResponseCharacteristics LIKE '" + ResponseCharacteristics + "' AND ThermalOverloadRelease LIKE '" + ThermalOverloadRelease + "' AND MaximumBreakingCapacity >= '" + MaximumBreakingCapacity.ToString().Replace(',', '.') + "' AND LeakageСurrent = '" + leakageСurrent.ToString().Replace(',', '.') + "' order by MaximumBreakingCapacity ", connection);
+                dataAdapter.Fill(ds);
+            }
+            return ds;
+        }
+        public DataSet GetDeviceQFDDataFromDBbyDBName(string dbName, string tableName, object RatedCurrent, object NumberOfPoles, object ResponseCharacteristics, object MaximumBreakingCapacity, object ThermalOverloadRelease, object leakageСurrent)
+        {
+            DataSet ds = new DataSet();
+            using (SqlConnection connection = new SqlConnection(CnnStr + dbName + ".mdf; Integrated Security = True"))
+            {
+                SqlDataAdapter dataAdapter = new SqlDataAdapter();
+                dataAdapter.SelectCommand = new SqlCommand("select * from " + tableName + " WHERE RatedСurrent = '"  + RatedCurrent.ToString().Replace(',', '.') + "' AND NumberOfPoles LIKE '" + NumberOfPoles + "' AND ResponseCharacteristics LIKE '" + ResponseCharacteristics + "' AND ThermalOverloadRelease LIKE '" + ThermalOverloadRelease + "' AND MaximumBreakingCapacity >= '" + MaximumBreakingCapacity.ToString().Replace(',', '.') + "' AND LeakageСurrent = '" + leakageСurrent.ToString().Replace(',', '.') + "' order by MaximumBreakingCapacity ", connection);
                 dataAdapter.Fill(ds);
             }
             return ds;
@@ -84,7 +108,7 @@ namespace EVA_Catalogue
             //проверка наличия БД
             int i = 0;
             string nameOfInsertedDB = Path.GetFileNameWithoutExtension(selectedFile).ToString();
-            foreach (string file in Directory.EnumerateFiles(MainViewModel.SourceDirectoryDB, "*.mdf"))
+            foreach (string file in Directory.EnumerateFiles(sourceDirectoryDB, "*.mdf"))
             {
 
                 if (nameOfInsertedDB == Path.GetFileNameWithoutExtension(file).ToString())
@@ -99,6 +123,7 @@ namespace EVA_Catalogue
                 string queryDropDB = $"DROP DATABASE {nameOfInsertedDB}";
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
+  
                     // Открываем подключение
                     connection.Open();
                     // Выполняем команду на удаление базы данных
@@ -106,7 +131,10 @@ namespace EVA_Catalogue
                     {
                         command.ExecuteNonQuery();
                     }
+                    connection.Close();
+                    connection.Dispose();
                 }
+
 
             }
                 try
@@ -114,8 +142,9 @@ namespace EVA_Catalogue
                     //перебираем листы в экселе, для каждого создаем таблицу с данными
                     ExcelHelperForDB excel = new ExcelHelperForDB(selectedFile);
                     (List<object[]>, List<object[]>)dataQFFromExcelPage = excel.GetListOfDevicesTypeFromDB();
-                    // Создание базы данных
-                    using (SqlConnection connection = new SqlConnection(connectionString))
+                // Создание базы данных
+                // Ниже раньше испльзовалась MainViewModel.SourceDirectoryDB2!!!
+                using (SqlConnection connection = new SqlConnection(connectionString))
                     {
                         connection.Open();
                         string createDatabaseQuery = "CREATE DATABASE "
@@ -125,7 +154,7 @@ namespace EVA_Catalogue
                                                      + nameOfInsertedDB
                                                      + "', "
                                                      + "FILENAME = '"
-                                                     + MainViewModel.SourceDirectoryDB2
+                                                     + sourceDirectoryDB
                                                      + "\\"
                                                      + nameOfInsertedDB
                                                      + ".mdf'"
@@ -134,7 +163,7 @@ namespace EVA_Catalogue
                                                      + nameOfInsertedDB
                                                      + "_log', "
                                                      + "FILENAME = '"
-                                                     + MainViewModel.SourceDirectoryDB2
+                                                     + sourceDirectoryDB
                                                      + "\\"
                                                      + nameOfInsertedDB
                                                      + "_log.ldf'"
@@ -145,9 +174,11 @@ namespace EVA_Catalogue
 
                         command.ExecuteNonQuery();
                         MessageBox.Show("БЗ успешно создана");
-                    }
-
-                    string connectionForTable = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + MainViewModel.SourceDirectoryDB + @"\" + nameOfInsertedDB + ".mdf; Integrated Security = True";
+                    connection.Close();
+                    connection.Dispose();
+                }
+                // Ниже раньше испльзовалась MainViewModel.SourceDirectoryDB!!!
+                string connectionForTable = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + sourceDirectoryDB + @"\" + nameOfInsertedDB + ".mdf; Integrated Security = True";
                     string createTableQueryQF = @"
                          CREATE TABLE [Модульные автоматические выключатели] (
     [id]                      INT            IDENTITY (1, 1) NOT NULL,
@@ -234,7 +265,10 @@ namespace EVA_Catalogue
                                 command.ExecuteNonQuery();
                             }
                         }
+
                     }
+                    dataBaseConnection.Close();
+                    dataBaseConnection.Dispose();
 
                 }
                 }
@@ -245,7 +279,8 @@ namespace EVA_Catalogue
                 catch (Exception ex)
                 {
                     MessageBox.Show("Error: " + ex.Message);
-                }     
+                }
+
 
         }
 
@@ -319,16 +354,31 @@ namespace EVA_Catalogue
 
         public void DeleteDataBase(string selectedFile)
         {
+            string querySetSingleUser = $"ALTER DATABASE {selectedFile} SET SINGLE_USER WITH ROLLBACK IMMEDIATE";
+          
+
             string queryDropDB = $"DROP DATABASE {selectedFile}";
             using (SqlConnection connection = new SqlConnection(connectionString))
             {
                 // Открываем подключение
                 connection.Open();
+                using (SqlCommand command = new SqlCommand(querySetSingleUser, connection))
+                {
+                    command.ExecuteNonQuery();  // Закрываем все соединения
+                }
                 // Выполняем команду на удаление базы данных
                 using (SqlCommand command = new SqlCommand(queryDropDB, connection))
                 {
                     command.ExecuteNonQuery();
                 }
+            }
+            PathHelper pathHelper = new PathHelper();
+            string sourceDirectorySettings = pathHelper.PathSettingsHelper();
+            if (File.Exists(sourceDirectorySettings))
+            {
+                // Очистка содержимого файла
+                File.WriteAllText(sourceDirectorySettings, string.Empty);
+             
             }
 
         }

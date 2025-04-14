@@ -6,7 +6,7 @@
         xmlns:viewmodel="clr-namespace:EVA_Catalogue"
         xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
         xmlns:local="clr-namespace:EVA_Catalogue"
-        Title="Модульные автоматические выключатели"
+        Title="{Binding WindowTitle}"
         Width="800"
         Height="800"
         MinWidth="700"

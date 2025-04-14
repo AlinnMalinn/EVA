@@ -8,6 +8,7 @@ using System.Windows;
 using System.Windows.Input;
 using Excel = Microsoft.Office.Interop.Excel;
 using System.Text;
+using System.Linq;
 
 
 namespace EVA_Catalogue
@@ -129,10 +130,30 @@ namespace EVA_Catalogue
                 NotifyPropertyChanged("IsSelectedProducer");
             }
         }
+
+        private string windowTitle;
+
+        public string WindowTitle
+        {
+            get { return windowTitle; }
+            set
+            {
+                windowTitle = value;                   
+            }
+            
+        }
         public SettingsModularCircuitBreakersVM()
         {
-            CreateProducerList();
-            LoadSettings();
+            if (SettingsHelper.Instance.TypeOfDevice == "ModularCircuitBreakers")
+            {
+                WindowTitle = "Настройка модульных автоматических выключателей";
+            }
+            else if (SettingsHelper.Instance.TypeOfDevice == "ModularResidualCurrentCircuitBreakers")
+            {
+                WindowTitle = "Настройка модульных автоматических диф. выключателей";
+            }
+                CreateProducerList();
+            LoadSettings(SettingsHelper.Instance.TypeOfDevice);
             CreatProduserListFromSettings();
             CreatSeriesListFromSettings();
 
@@ -161,9 +182,12 @@ namespace EVA_Catalogue
         }
         private void OkCommand()
         {
+            PathHelper pathHelper = new PathHelper();
+            string sourceDirectorySettings = pathHelper.PathSettingsHelper();
             List<string> producerListForSettings = new List<string>();
             List<string> seriesListForSettings = new List<string>();
             List<string> seriesListWhithProducersForSettings = new List<string>();
+
             if (newProducerList.Count != 0)
             {
                 foreach (ProducerModel newProducer in newProducerList)
@@ -175,6 +199,7 @@ namespace EVA_Catalogue
             {
                 producerListForSettings.Add("%");
             }
+
             if (newSeriesList.Count != 0)
             {
                 foreach (ProducerModel newSeries in newSeriesList)
@@ -186,13 +211,39 @@ namespace EVA_Catalogue
             {
                 seriesListForSettings.Add("%");
             }
+
             string producerSrtingForSettings = string.Join("#", producerListForSettings);
             string seriesSrtingForSettings = string.Join("#", seriesListWhithProducersForSettings);
-            List<string> finalList = new List<string>() { MainViewModel.ModularCircuitBreakersSettings, producerSrtingForSettings, seriesSrtingForSettings };
-            string finalString = string.Join("%", finalList);
-            string[] finalArray = new string[] { finalString };
-            File.WriteAllLines(MainViewModel.SourceDirectorySettings, finalArray);
+            string newEntry = string.Join("%", SettingsHelper.Instance.TypeOfDevice, producerSrtingForSettings, seriesSrtingForSettings);
 
+            // Читаем существующий файл
+            List<string> lines = new List<string>();
+            if (File.Exists(sourceDirectorySettings))
+            {
+                lines = File.ReadAllLines(sourceDirectorySettings).ToList();
+            }
+
+            bool updated = false;
+            for (int i = 0; i < lines.Count; i++)
+            {
+                if (lines[i].StartsWith(SettingsHelper.Instance.TypeOfDevice + "%"))
+                {
+                    lines[i] = newEntry;
+                    updated = true;
+                    break;
+                }
+            }
+
+            // Если строка не была найдена, добавляем новую запись
+            if (!updated)
+            {
+                lines.Add(newEntry);
+            }
+
+            // Записываем обновленные данные обратно в файл
+            File.WriteAllLines(sourceDirectorySettings, lines);
+
+            // Закрываем текущее окно
             foreach (Window window in Application.Current.Windows)
             {
                 if (window.DataContext == this)
@@ -381,18 +432,29 @@ namespace EVA_Catalogue
         private List<ProducerModel> CreateProducerList() // формирование списка производителей для ComboBox
         {
             producerList = new List<ProducerModel>();
-            foreach (string file in Directory.EnumerateFiles(MainViewModel.SourceDirectoryDB, "*.mdf"))
+            PathHelper pathHelper = new PathHelper();
+            string sourceDirectoryDB = pathHelper.PathDBHelper();
+            try
             {
-                ProducerModel producerModel = new ProducerModel();
-                producerModel.producer = Path.GetFileNameWithoutExtension(file).ToString();
-                ProducerList.Add(producerModel);
+                foreach (string file in Directory.EnumerateFiles(sourceDirectoryDB, "*.mdf"))
+                {
+                    ProducerModel producerModel = new ProducerModel();
+                    producerModel.producer = Path.GetFileNameWithoutExtension(file).ToString();
+                    ProducerList.Add(producerModel);
+                }
+                return ProducerList;
             }
-            return ProducerList;
+            catch {
+                MessageBox.Show("Нет загруженных каталогов");
+                return ProducerList;
+            }
         }
         private List<ProducerModel> CreateProducerListForListBox() // формирование списка производителей для ComboBox
         {
+            PathHelper pathHelper = new PathHelper();
+            string sourceDirectoryDB = pathHelper.PathDBHelper();
             producerList = new List<ProducerModel>();
-            foreach (string file in Directory.EnumerateFiles(MainViewModel.SourceDirectoryDB, "*.mdf"))
+            foreach (string file in Directory.EnumerateFiles(sourceDirectoryDB, "*.mdf"))
             {
                 int i = 0;
                 foreach (ProducerModel produserFromList in newProducerList)
@@ -440,11 +502,20 @@ namespace EVA_Catalogue
         }
         private List<ProducerModel> CreateSeriesList()  // формирование списка серий оборудования для выбранного производителя для ComboBox
         {
+            string tableName = "";
+            if (SettingsHelper.Instance.TypeOfDevice == "ModularCircuitBreakers")
+            {
+                tableName = MainViewModel.TableNameModularCircuitBreakers;
+            }
+            else if (SettingsHelper.Instance.TypeOfDevice == "ModularResidualCurrentCircuitBreakers")
+            {
+                tableName = MainViewModel.TableNameModularResidualCurrentCircuitBreakers;
+            }
             DBHelper dBHelper = new DBHelper();
             seriesList = new List<ProducerModel>();
             foreach (ProducerModel newProducer in newProducerList)
             {
-                DataSet dsS = dBHelper.GetSeriesDataFromDB(newProducer.producer, MainViewModel.TableNameModularCircuitBreakers);
+                DataSet dsS = dBHelper.GetSeriesDataFromDB(newProducer.producer, tableName);
                 DataTable dtS = new DataTable();
                 dtS = dsS.Tables[0];    
 
@@ -460,21 +531,23 @@ namespace EVA_Catalogue
             }
             return SeriesList;
         }
-        private void LoadSettings()
+        private void LoadSettings(string typeOfDevice)
 
         {
             List<string> producerListForSettings = new List<string>();
             List<string> seriesListForSettings = new List<string>();
+            PathHelper pathHelper = new PathHelper();
+            string sourceDirectorySettings = pathHelper.PathSettingsHelper();
             try
             {
-                using (StreamReader reader = new StreamReader(MainViewModel.SourceDirectorySettings))
+                using (StreamReader reader = new StreamReader(sourceDirectorySettings))
                 {
 
                     string line;
 
                     while ((line = reader.ReadLine()) != null)
                     {
-                        if (line.Split('%')[0] == MainViewModel.ModularCircuitBreakersSettings)
+                        if (line.Split('%')[0] == typeOfDevice)
                         {
                             //int x = line.Split('%').Length;
                             string lineWhithProducers= line.Split('%')[1];
@@ -500,7 +573,7 @@ namespace EVA_Catalogue
             }
             catch
             {
-                File.Create(MainViewModel.SourceDirectorySettings);
+                File.Create(sourceDirectorySettings);
                 //string finalArray =  MainViewModel.ModularCircuitBreakersSettings + "%%%";
                 //File.WriteAllLines(MainViewModel.SourceDirectorySettings, finalArray);
                 //using (StreamWriter sw = new StreamWriter(MainViewModel.SourceDirectorySettings))

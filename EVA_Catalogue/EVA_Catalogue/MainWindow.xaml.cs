@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Interop;
+using Excel = Microsoft.Office.Interop.Excel;
 
 namespace EVA_Catalogue
 {
@@ -32,11 +33,11 @@ namespace EVA_Catalogue
 
         private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
 
-
+        
         public MainWindow()
         {
             InitializeComponent();
-
+            
         }
 
 

@@ -63,14 +63,23 @@ namespace EVA_Catalogue
         private List<ProducerModel> CreateProducerList() // формирование списка БД для ComboBox
         {
             producerList = new List<ProducerModel>();
-            foreach (string file in Directory.EnumerateFiles(MainViewModel.SourceDirectoryDB, "*.mdf"))
+            PathHelper pathHelper = new PathHelper();
+            string sourceDirectoryDB = pathHelper.PathDBHelper();
+            try
             {
-                ProducerModel producerModel = new ProducerModel();
-                producerModel.producer = Path.GetFileNameWithoutExtension(file).ToString();
-                ProducerList.Add(producerModel);
-                
+                foreach (string file in Directory.EnumerateFiles(sourceDirectoryDB, "*.mdf"))
+                {
+                    ProducerModel producerModel = new ProducerModel();
+                    producerModel.producer = Path.GetFileNameWithoutExtension(file).ToString();
+                    ProducerList.Add(producerModel);
+
+                }
+                ProducerList = producerList;
             }
-            ProducerList = producerList;
+            catch
+            { 
+
+            }
             return ProducerList;
         }
 
@@ -95,10 +104,12 @@ namespace EVA_Catalogue
                 {
                     try
                     {
+                        Mouse.OverrideCursor = Cursors.Wait;
                         DBHelper dBHelper = new DBHelper();
                         dBHelper.AddDataBase(selectedFile);
                         //dBHelper.ToFullFillDataBase(selectedFile);
                         CreateProducerList();
+                        Mouse.OverrideCursor = null;
 
                     }
                     catch (Exception ex)
@@ -145,10 +156,16 @@ namespace EVA_Catalogue
         }
         private void DeleteCommand()
         {
+            Mouse.OverrideCursor = Cursors.Wait;
             DBHelper dBHelper = new DBHelper();
-            dBHelper.AddDataBase(selectedBD.producer);
-            //dBHelper.ToFullFillDataBase(selectedFile);
-            CreateProducerList();
+            if (selectedBD != null)
+            {
+                dBHelper.DeleteDataBase(selectedBD.producer);
+                //dBHelper.ToFullFillDataBase(selectedFile);
+                CreateProducerList();
+               
+            }
+            Mouse.OverrideCursor = null;
         }
 
         public ICommand Accept { get; }

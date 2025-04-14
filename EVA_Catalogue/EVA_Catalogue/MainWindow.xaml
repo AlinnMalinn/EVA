@@ -26,7 +26,9 @@
 
     <Window.Resources>
         <ResourceDictionary Source="Dictionary1.xaml" />
+  
     </Window.Resources>
+
 
     <Window.DataContext>
         <local:MainViewModel />
@@ -154,7 +156,8 @@
                                   HorizontalAlignment="Left"
                                   IsThreeState="False"
                                   Name="btnBold2"
-                                  IsChecked="False">
+                                
+                                  IsChecked="{Binding IsAutomaticSelectionEnabledForModularResidualCircuitBreakers, Mode=TwoWay}">
                         <Image Width="16" Height="16" />
                     </ToggleButton>
 
@@ -172,7 +175,8 @@
                                   HorizontalAlignment="Left"
                                   IsThreeState="False"
                                   Name="btnBold3"
-                                  IsChecked="False">
+                                  IsChecked="False"
+                                  IsEnabled="False">
                         <Image Width="16" Height="16" />
                     </ToggleButton>
 
@@ -182,15 +186,17 @@
                             Margin="10"
                             Style="{StaticResource TransparentIconButton}"
                             Command="{Binding OpenWindowSettingsModularResidualCurrentBreakersCommand}"
+                            IsEnabled="False"
                             Content="Устройство защитного отключения" />
-                    
+
                     <ToggleButton Grid.Row="3"
                                   Grid.Column="0"
                                   Margin="10"
                                   HorizontalAlignment="Left"
                                   IsThreeState="False"
                                   Name="btnBold4"
-                                  IsChecked="False">
+                                  IsChecked="False"
+                                  IsEnabled="False">
                         <Image Width="16" Height="16" />
                     </ToggleButton>
 
@@ -199,6 +205,7 @@
                             Height="Auto"
                             Margin="10"
                             Style="{StaticResource TransparentIconButton}"
+                            IsEnabled="False"
                             Command="{Binding OpenWindowSettingsModularResidualCurrentBreakersCommand}"
                             Content="Контактор" />
 
@@ -208,7 +215,8 @@
                                   HorizontalAlignment="Left"
                                   IsThreeState="False"
                                   Name="btnBold5"
-                                  IsChecked="False">
+                                  IsChecked="False"
+                                  IsEnabled="False">
                         <Image Width="16" Height="16" />
                     </ToggleButton>
 
@@ -218,6 +226,7 @@
                             Margin="10"
                             Style="{StaticResource TransparentIconButton}"
                             Command="{Binding OpenWindowSettingsModularResidualCurrentBreakersCommand}"
+                            IsEnabled="False"
                             Content="Предохранитель (плавкая вставка)" />
                     <ToggleButton Grid.Row="5"
                                   Grid.Column="0"
@@ -225,7 +234,8 @@
                                   HorizontalAlignment="Left"
                                   IsThreeState="False"
                                   Name="btnBold6"
-                                  IsChecked="False">
+                                  IsChecked="False"
+                                  IsEnabled="False">
                         <Image Width="16" Height="16" />
                     </ToggleButton>
 
@@ -235,7 +245,8 @@
                             Margin="10"
                             Style="{StaticResource TransparentIconButton}"
                             Command="{Binding OpenWindowSettingsModularResidualCurrentBreakersCommand}"
-                            Content="Устройство защиты от дугового пробоя" />
+                            IsEnabled="False"
+                            Content="Устройство защиты от дугового пробоя" Cursor="Hand" />
                 </Grid>
 
                 <Grid Grid.Row="4">
@@ -243,16 +254,21 @@
                         <ColumnDefinition Width="*" />
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
-
                     <Button HorizontalAlignment="Right"
-                            Grid.Column="0"
-                            Width="130"
-                            Height="30"
-                            Margin="0,0,10,0"
-                            Command="{Binding EquipmentSelection}"
-                            Style="{StaticResource GeneralButton}"
-                            Content="Выполнить" />
-
+        Grid.Column="0"
+        Width="130"
+        Height="30"
+        Margin="0,0,10,0"
+        Command="{Binding EquipmentSelection}"
+        Style="{StaticResource GeneralButton}"
+        Content="Выполнить">
+                        <Button.IsEnabled>
+                            <MultiBinding Converter="{StaticResource ToggleToEnabledConverter}">
+                                <Binding Path="IsAutomaticSelectionEnabledForModularResidualCircuitBreakers"/>
+                                <Binding Path="IsAutomaticSelectionEnabledForModularCircuitBreakers"/>
+                            </MultiBinding>
+                        </Button.IsEnabled>
+                    </Button>
                     <Button HorizontalAlignment="Left"
                             Grid.Column="1"
                             Width="130"
@@ -274,12 +290,11 @@
                 MouseDown="ResizeBorder_MouseDown" />
         <Border x:Name="ResizeBottom"
                 Height="6"
-                HorizontalAlignment="Stretch"
-                VerticalAlignment="Bottom"
+                VerticalAlignment="Top"
                 
                 Style="{StaticResource ResizeBorders}"
                 Cursor="SizeNS"
-                MouseDown="ResizeBorder_MouseDown" />
+                MouseDown="ResizeBorder_MouseDown" Margin="0,794,0,0" />
         <Border x:Name="ResizeLeft"
                 Width="6"
                 HorizontalAlignment="Left"

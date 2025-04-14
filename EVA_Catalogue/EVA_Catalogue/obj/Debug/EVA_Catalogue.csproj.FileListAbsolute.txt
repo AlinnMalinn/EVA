@@ -17,7 +17,6 @@ C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\Microsoft.Xaml.B
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\EVA_Catalogue.g.resources
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\EVA_Catalogue.Properties.Resources.resources
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\EVA_Catalogue.csproj.GenerateResource.cache
-C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\EVA_Catalogue.csproj.CopyComplete
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\EVA_Catalogue.exe
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\EVA_Catalogue.pdb
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\GeneratedInternalTypeHelper.g.cs
@@ -25,7 +24,6 @@ C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\EVA_Catalogue.cs
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\EVA_Catalogue.csproj.AssemblyReference.cache
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\EVA_Catalogue.csproj.CoreCompileInputs.cache
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\EVA_Catalogue_Content.g.cs
-C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\System.AddIn.dll
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\MainWindow.g.cs
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\MainWindow.baml
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\DKC.mdf
@@ -34,8 +32,6 @@ C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEK.mdf
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEK_log.ldf
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\WindowSettingsModularCircuitBreakers.g.cs
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\WindowSettingsModularCircuitBreakers.baml
-C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\WindowSettingsModularResidualCurrentBreakers.g.cs
-C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\WindowSettingsModularResidualCurrentBreakers.baml
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\WindowSettingsDataBases.g.cs
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\WindowSettingsDataBases.baml
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKnew.mdf
@@ -43,7 +39,8 @@ C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKnew_log.ldf
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\Dictionary1.g.cs
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKnew123.mdf
 C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKnew123_log.ldf
-C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKtest1.mdf
-C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKtest1_log.ldf
-C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKtest2.mdf
-C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\iEKtest2_log.ldf
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\obj\Debug\EVA_Cata.B8BE75CD.Up2Date
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\Revit-Eva_Connector.dll
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\EvaAPI.dll
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\Newtonsoft.Json.dll
+C:\Users\79126\source\EVA\EVA_Catalogue\EVA_Catalogue\bin\Debug\Revit-Eva_Connector.pdb

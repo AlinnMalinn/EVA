@@ -14,11 +14,13 @@ namespace EVA_Catalogue
         Excel.Workbook excelWB;
         Excel.Worksheet excelWS;
         Excel.Application excel = new Excel.Application();
+
         public ExcelHelperForDB(string path)
         {
             this.path = path;
             excelWB = excel.Workbooks.Open(path);
-            //excelWS = (Excel.Worksheet)excelWB.Sheets.get_Item(nameSheet);
+
+          
         }
         public (List<object[]>, List<object[]>) GetListOfDevicesTypeFromDB()
         {
@@ -80,14 +82,14 @@ namespace EVA_Catalogue
             }
             // Закрываем файл и приложение
             excelWB.Close(false);
-            excel.Quit();
+            //excel.Quit();
 
             // Освобождаем ресурсы
             System.Runtime.InteropServices.Marshal.ReleaseComObject(excelWB);
-            System.Runtime.InteropServices.Marshal.ReleaseComObject(excel);
+            //System.Runtime.InteropServices.Marshal.ReleaseComObject(excel);
 
             excelWB = null;
-            excel = null;
+            //excel = null;
 
             GC.Collect();
             GC.WaitForPendingFinalizers();
