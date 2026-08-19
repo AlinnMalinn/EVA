@@ -13,7 +13,6 @@ namespace EVA_Catalogue
     /// </summary>
     public partial class MainWindow : Window
     {
-        internal static bool windowSettingsModularCircuitBreakersIsOpened;
 
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HT_CAPTION = 0x2;

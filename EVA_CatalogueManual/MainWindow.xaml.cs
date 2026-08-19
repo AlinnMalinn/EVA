@@ -13,7 +13,6 @@ namespace EVA_CatalogueManual
     /// </summary>
     public partial class MainWindow : Window
     {
-        internal static bool windowSettingsModularCircuitBreakersIsOpened;
 
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HT_CAPTION = 0x2;
@@ -107,14 +106,5 @@ namespace EVA_CatalogueManual
             }
         }
 
-        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
-
-        private void DataGrid_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
-        {
-
-        }
     }
 }

@@ -244,7 +244,6 @@ namespace EVA_CatalogueManual
 
         }
 
-        private System.Windows.Window _ownerWindow;//удалить
 
         public MainViewModel()
         {
@@ -283,15 +282,6 @@ namespace EVA_CatalogueManual
                 CheckConfiguration();
                 CheckIfDeviceSelected();
 
-
-                CheckExcelDataCommand = new RelayCommand(param =>
-                {
-                    IsExcelDataAvailable = new PathHelper().CheckLinkForDB();
-                });
-                LinkForDBCommand = new RelayCommand(param =>
-                {
-                    LinkForDB = new PathHelper().GetLinkForDB();
-                });
 
                 ChosenTypeOfDeviceCommand = new RelayCommand(param => TryAttachToExcel());
 
@@ -765,8 +755,6 @@ namespace EVA_CatalogueManual
 
         public ICommand Accept { get; }
         public ICommand Cancel { get; }
-        public ICommand CheckExcelDataCommand { get; set; }
-        public ICommand LinkForDBCommand { get; set; }
         public ICommand ChosenTypeOfDeviceCommand { get; set; }
         public ICommand EquipmentSelection { protected set; get; }
         public ICommand SaveConfigurationCommand { get; set; }

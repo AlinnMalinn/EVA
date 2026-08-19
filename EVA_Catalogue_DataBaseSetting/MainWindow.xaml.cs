@@ -22,7 +22,6 @@ namespace EVA_Catalogue_DataBaseSetting
     /// </summary>
     public partial class MainWindow : Window
     {
-        internal static bool windowSettingsModularCircuitBreakersIsOpened;
 
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HT_CAPTION = 0x2;
@@ -115,9 +114,5 @@ namespace EVA_Catalogue_DataBaseSetting
             }
         }
 
-        private void Button_Click(object sender, RoutedEventArgs e)
-        {
-
-        }
     }
 }

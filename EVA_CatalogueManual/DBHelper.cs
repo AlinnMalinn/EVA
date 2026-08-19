@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Data.SqlClient;
 using System.Data;
 using System.IO;
 using System.Linq;
@@ -14,17 +13,10 @@ namespace EVA_CatalogueManual
 {
     class DBHelper
     {
-        //private string CnnStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + MainViewModel.SourceDirectoryDB + @"\";
-        private string CnnStr;
-        string connectionString = @"Data Source = (LocalDB)\MSSQLLocalDB; Integrated Security = True";
-        PathHelper pathHelper;
-        string sourceDirectoryDB;
-        //string comandSelect;
         public DBHelper()
         {
             PathHelper pathHelper = new PathHelper();
-            sourceDirectoryDB = pathHelper.PathDBHelper();
-            CnnStr = @"Data Source=(LocalDB)\MSSQLLocalDB;AttachDbFilename=" + sourceDirectoryDB + @"\";
+            string sourceDirectoryDB = pathHelper.PathDBHelper();
             CatalogueCacheService.Instance.ConfigureDirectory(sourceDirectoryDB);
         }
         public DataSet GetSeriesDataFromDB(string dbName, string tableName)

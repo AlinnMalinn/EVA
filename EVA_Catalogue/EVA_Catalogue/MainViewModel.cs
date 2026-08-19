@@ -109,14 +109,6 @@ namespace EVA_Catalogue
            
             EquipmentSelection = new RelayCommand(param => SayResult());
 
-            CheckExcelDataCommand = new RelayCommand(param =>
-            {
-                IsExcelDataAvailable = new PathHelper().CheckLinkForDB();
-            });
-            LinkForDBCommand = new RelayCommand(param =>
-            {
-                LinkForDB = new PathHelper().GetLinkForDB();
-            });
             RefreshCataloguesCommand = new RelayCommand(param => RefreshCatalogues());
             OpenWindowSettingsModularCircuitBreakersCommand = new RelayCommand(param => OpenWindowSettingsModularCircuitBreakers());
             OpenWindowSettingsModularResidualCurrentBreakersCommand = new RelayCommand(param => OpenWindowSettingsModularResidualCurrentBreakers());
@@ -500,9 +492,6 @@ namespace EVA_Catalogue
         public ICommand Cancel { get; }
         public ICommand OpenWindowSettingsModularCircuitBreakersCommand { set; get; }
         public ICommand OpenWindowSettingsModularResidualCurrentBreakersCommand { get; }
-        public ICommand SaveFolderDialogCommand { set; get; }
-        public ICommand CheckExcelDataCommand { get; set; }
-        public ICommand LinkForDBCommand { get; set; }
         public ICommand RefreshCataloguesCommand { get; set; }
 
     }

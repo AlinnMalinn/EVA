@@ -114,14 +114,12 @@ namespace EVA_CatalogueManual
                 lines = File.ReadAllLines(sourceDirectorySettings).ToList();
             }
 
-            bool updated = false;
             for (int i = 0; i < lines.Count; i++)
             {
 
                 if (lines[i].StartsWith(SettingsHelper.Instance.TypeOfDevice + "%"))
                 {
                     lines[i] = "";
-                    updated = true;
                     break;
                 }
             }

@@ -68,14 +68,6 @@ namespace EVA_Catalogue_DataBaseSetting
             Cancel = new RelayCommand(param => CancelCommand());
             
             SaveFolderDialogCommand = new RelayCommand(param => SaveFolderDialog());           
-            //CheckExcelDataCommand = new RelayCommand(param =>
-            //{
-            //    IsExcelDataAvailable = new PathHelper().CheckLinkForDB();
-            //});
-            LinkForDBCommand = new RelayCommand(param =>
-            {
-                LinkForDB = new PathHelper().GetLinkForDB();
-            });
            
 
         }
@@ -152,8 +144,6 @@ namespace EVA_Catalogue_DataBaseSetting
         public ICommand Cancel { get; }
         
         public ICommand SaveFolderDialogCommand { set; get; }
-        //public ICommand CheckExcelDataCommand { get; set; }
-        public ICommand LinkForDBCommand { get; set; }
 
     }
 }

@@ -139,10 +139,8 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Helpers\ExcelHelperForDB.cs" />
     <Compile Include="Helpers\CatalogueCacheService.cs" />
     <Compile Include="Helpers\SettingsProfileService.cs" />
-    <Compile Include="Helpers\ExcelUploadDB.cs" />
     <Compile Include="Converters\ButtonsToEnabledConverter.cs" />
     <Compile Include="Converters\ToggleButtonsToEnabledConverter.cs" />
     <Compile Include="Helpers\PathHelper.cs" />
