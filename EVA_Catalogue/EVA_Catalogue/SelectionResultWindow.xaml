@@ -1,0 +1,55 @@
+<Window x:Class="EVA_Catalogue.SelectionResultWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+        Title="Подбор завершён с предупреждениями"
+        Width="620" Height="440" MinWidth="520" MinHeight="340"
+        AllowsTransparency="True" Background="Transparent"
+        FontFamily="{materialDesign:NotoFont}" TextElement.FontSize="14"
+        ResizeMode="CanResize" WindowStartupLocation="CenterOwner" WindowStyle="None">
+    <Window.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Dictionary.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+            <Style x:Key="ResultLightButton" TargetType="Button" BasedOn="{StaticResource MaterialDesignOutlinedButton}">
+                <Setter Property="Height" Value="36"/><Setter Property="Background" Value="LightGray"/>
+                <Setter Property="Foreground" Value="Black"/><Setter Property="BorderBrush" Value="Gray"/>
+                <Setter Property="BorderThickness" Value="1"/><Setter Property="materialDesign:ButtonAssist.CornerRadius" Value="5"/>
+            </Style>
+            <Style x:Key="ResultDarkButton" TargetType="Button" BasedOn="{StaticResource GeneralButton}">
+                <Setter Property="Height" Value="36"/><Setter Property="Background" Value="Gray"/>
+                <Setter Property="Foreground" Value="White"/><Setter Property="BorderBrush" Value="Gray"/>
+                <Setter Property="BorderThickness" Value="1"/>
+            </Style>
+        </ResourceDictionary>
+    </Window.Resources>
+    <Grid>
+        <Border Style="{StaticResource BorderWindow2}">
+            <Grid Margin="12">
+                <Grid.RowDefinitions><RowDefinition Height="52"/><RowDefinition Height="52"/><RowDefinition/><RowDefinition Height="58"/></Grid.RowDefinitions>
+                <Grid Background="Transparent" MouseDown="Window_MouseDown">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="40"/><ColumnDefinition/><ColumnDefinition Width="40"/></Grid.ColumnDefinitions>
+                    <TextBlock Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center" FontSize="17" Foreground="Black" Text="Подбор завершён с предупреждениями"/>
+                    <Button Grid.Column="2" Click="Close_Click" Style="{StaticResource CloseButtonStyle}"/>
+                </Grid>
+                <Border Grid.Row="1" Margin="0,0,0,10" Background="Gray" Style="{StaticResource BorderWindow}">
+                    <TextBlock Margin="12,0" VerticalAlignment="Center" Foreground="White" Text="Не для всех позиций удалось подобрать оборудование"/>
+                </Border>
+                <TextBox Grid.Row="2" Margin="4" Padding="10" IsReadOnly="True" TextWrapping="Wrap"
+                         VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled"
+                         Text="{Binding ResultText, RelativeSource={RelativeSource AncestorType=Window}}"
+                         Background="White" BorderBrush="Gray" BorderThickness="1"/>
+                <Grid Grid.Row="3" Margin="4,12,4,0">
+                    <Grid.ColumnDefinitions><ColumnDefinition Width="Auto"/><ColumnDefinition/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
+                    <Button Grid.Column="0" Width="190" Click="Export_Click" Style="{StaticResource ResultLightButton}">
+                        <StackPanel Orientation="Horizontal"><materialDesign:PackIcon Width="19" Height="19" Margin="0,0,8,0" Kind="FileExportOutline"/><TextBlock VerticalAlignment="Center" Text="Выгрузить в TXT"/></StackPanel>
+                    </Button>
+                    <Button Grid.Column="2" Width="140" Click="Close_Click" IsDefault="True" IsCancel="True" Style="{StaticResource ResultDarkButton}">
+                        <StackPanel Orientation="Horizontal"><materialDesign:PackIcon Width="19" Height="19" Margin="0,0,8,0" Kind="Close"/><TextBlock VerticalAlignment="Center" Text="Закрыть"/></StackPanel>
+                    </Button>
+                </Grid>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>

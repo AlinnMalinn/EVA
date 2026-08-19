@@ -36,8 +36,16 @@ namespace EVA_Catalogue
         
         public MainWindow()
         {
-            InitializeComponent();
-            
+            var previousCursor = Mouse.OverrideCursor;
+            try
+            {
+                Mouse.OverrideCursor = Cursors.Wait;
+                InitializeComponent();
+            }
+            finally
+            {
+                Mouse.OverrideCursor = previousCursor;
+            }
         }
 
 
@@ -87,6 +95,14 @@ namespace EVA_Catalogue
                     ReleaseCapture();
                     SendMessage(windowHandle, WM_NCLBUTTONDOWN, (IntPtr)resizeDirection, IntPtr.Zero);
                 }
+            }
+        }
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            // Проверяем, нажата ли левая кнопка мыши
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                this.DragMove(); // Позволяет перемещать окно
             }
         }
     }

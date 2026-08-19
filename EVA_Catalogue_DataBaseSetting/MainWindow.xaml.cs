@@ -1,17 +1,29 @@
-﻿using System.Runtime.InteropServices;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
 
-namespace EVA_Catalogue
+namespace EVA_Catalogue_DataBaseSetting
 {
     /// <summary>
-    /// Логика взаимодействия для WindowSettingsModularCircuitBreakers.xaml
+    /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class WindowSettingsModularCircuitBreakers : Window
+    public partial class MainWindow : Window
     {
+        internal static bool windowSettingsModularCircuitBreakersIsOpened;
+
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HT_CAPTION = 0x2;
         private const int HT_LEFT = 10;
@@ -29,7 +41,9 @@ namespace EVA_Catalogue
         [DllImport("user32.dll")]
 
         private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
-        public WindowSettingsModularCircuitBreakers()
+
+
+        public MainWindow()
         {
             var previousCursor = Mouse.OverrideCursor;
             try
@@ -42,6 +56,13 @@ namespace EVA_Catalogue
                 Mouse.OverrideCursor = previousCursor;
             }
         }
+
+
+        /// <summary>
+        /// Изменение размера окна
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ResizeBorder_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -92,6 +113,11 @@ namespace EVA_Catalogue
             {
                 this.DragMove(); // Позволяет перемещать окно
             }
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+
         }
     }
 }

@@ -4,14 +4,17 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Interop;
+using Excel = Microsoft.Office.Interop.Excel;
 
-namespace EVA_Catalogue
+namespace EVA_CatalogueManual
 {
     /// <summary>
-    /// Логика взаимодействия для WindowSettingsModularCircuitBreakers.xaml
+    /// Логика взаимодействия для MainWindow.xaml
     /// </summary>
-    public partial class WindowSettingsModularCircuitBreakers : Window
+    public partial class MainWindow : Window
     {
+        internal static bool windowSettingsModularCircuitBreakersIsOpened;
+
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HT_CAPTION = 0x2;
         private const int HT_LEFT = 10;
@@ -29,7 +32,9 @@ namespace EVA_Catalogue
         [DllImport("user32.dll")]
 
         private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
-        public WindowSettingsModularCircuitBreakers()
+
+
+        public MainWindow()
         {
             var previousCursor = Mouse.OverrideCursor;
             try
@@ -42,6 +47,13 @@ namespace EVA_Catalogue
                 Mouse.OverrideCursor = previousCursor;
             }
         }
+
+
+        /// <summary>
+        /// Изменение размера окна
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         private void ResizeBorder_MouseDown(object sender, MouseButtonEventArgs e)
         {
             if (e.LeftButton == MouseButtonState.Pressed)
@@ -80,6 +92,7 @@ namespace EVA_Catalogue
                             break;
                     }
 
+
                     ReleaseCapture();
                     SendMessage(windowHandle, WM_NCLBUTTONDOWN, (IntPtr)resizeDirection, IntPtr.Zero);
                 }
@@ -92,6 +105,16 @@ namespace EVA_Catalogue
             {
                 this.DragMove(); // Позволяет перемещать окно
             }
+        }
+
+        private void DataGrid_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+
+        }
+
+        private void DataGrid_SelectionChanged_1(object sender, SelectionChangedEventArgs e)
+        {
+
         }
     }
 }

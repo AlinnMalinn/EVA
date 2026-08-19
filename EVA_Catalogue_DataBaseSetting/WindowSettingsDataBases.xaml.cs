@@ -1,16 +1,27 @@
-﻿using System.Runtime.InteropServices;
-using System;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Runtime.InteropServices;
+using System.Text;
+using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Input;
 using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Input;
 using System.Windows.Interop;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Shapes;
 
-namespace EVA_Catalogue
+namespace EVA_Catalogue_DataBaseSetting
 {
     /// <summary>
-    /// Логика взаимодействия для WindowSettingsModularCircuitBreakers.xaml
+    /// Логика взаимодействия для Window1.xaml
+    /// <summary>
+    /// Логика взаимодействия для WindowSettingsDataBases.xaml
     /// </summary>
-    public partial class WindowSettingsModularCircuitBreakers : Window
+    public partial class WindowSettingsDataBases : Window
     {
         private const int WM_NCLBUTTONDOWN = 0xA1;
         private const int HT_CAPTION = 0x2;
@@ -29,7 +40,7 @@ namespace EVA_Catalogue
         [DllImport("user32.dll")]
 
         private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
-        public WindowSettingsModularCircuitBreakers()
+        public WindowSettingsDataBases()
         {
             var previousCursor = Mouse.OverrideCursor;
             try
@@ -85,6 +96,7 @@ namespace EVA_Catalogue
                 }
             }
         }
+
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
         {
             // Проверяем, нажата ли левая кнопка мыши
