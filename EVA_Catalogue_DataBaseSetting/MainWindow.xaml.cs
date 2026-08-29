@@ -10,6 +10,7 @@ using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Interop;
+using EVA_Catalogue_Shared;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -44,15 +45,18 @@ namespace EVA_Catalogue_DataBaseSetting
 
         public MainWindow()
         {
-            var previousCursor = Mouse.OverrideCursor;
-            try
+            using (CatalogueLoadingWindowService.Show("Проверка настроек каталогов…\nПожалуйста, подождите."))
             {
-                Mouse.OverrideCursor = Cursors.Wait;
-                InitializeComponent();
-            }
-            finally
-            {
-                Mouse.OverrideCursor = previousCursor;
+                var previousCursor = Mouse.OverrideCursor;
+                try
+                {
+                    Mouse.OverrideCursor = Cursors.Wait;
+                    InitializeComponent();
+                }
+                finally
+                {
+                    Mouse.OverrideCursor = previousCursor;
+                }
             }
         }
 

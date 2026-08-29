@@ -154,7 +154,7 @@ namespace EVA_Catalogue.ViewModels
             {
                 WindowTitle = "Настройка модульных автоматических диф. выключателей";
             }
-                CreateProducerList();
+            CreateProducerList();
             LoadSettings(SettingsHelper.Instance.TypeOfDevice);
             CreatProduserListFromSettings();
             CreatSeriesListFromSettings();
@@ -189,7 +189,6 @@ namespace EVA_Catalogue.ViewModels
             PathHelper pathHelper = new PathHelper();
             string sourceDirectorySettings = pathHelper.PathSettingsHelper();
             List<string> producerListForSettings = new List<string>();
-            List<string> seriesListForSettings = new List<string>();
             List<string> seriesListWhithProducersForSettings = new List<string>();
 
             if (newProducerList.Count != 0)
@@ -210,38 +209,6 @@ namespace EVA_Catalogue.ViewModels
                 {
                     seriesListWhithProducersForSettings.Add(newSeries.series.ToString());
                 }
-            }
-            else
-            {
-                seriesListForSettings.Add("%");
-            }
-
-            string producerSrtingForSettings = string.Join("#", producerListForSettings);
-            string seriesSrtingForSettings = string.Join("#", seriesListWhithProducersForSettings);
-            string newEntry = string.Join("%", SettingsHelper.Instance.TypeOfDevice, producerSrtingForSettings, seriesSrtingForSettings);
-
-            // Читаем существующий файл
-            List<string> lines = new List<string>();
-            if (File.Exists(sourceDirectorySettings))
-            {
-                lines = File.ReadAllLines(sourceDirectorySettings).ToList();
-            }
-
-            bool updated = false;
-            for (int i = 0; i < lines.Count; i++)
-            {
-                if (lines[i].StartsWith(SettingsHelper.Instance.TypeOfDevice + "%"))
-                {
-                    lines[i] = newEntry;
-                    updated = true;
-                    break;
-                }
-            }
-
-            // Если строка не была найдена, добавляем новую запись
-            if (!updated)
-            {
-                lines.Add(newEntry);
             }
 
             Excel.Workbook workbook = AppManager.ExcelApp.ActiveWorkbook;
@@ -324,6 +291,7 @@ namespace EVA_Catalogue.ViewModels
         {
             if (selectedProducer!= null)
             {
+                int selectedIndex = ProducerList?.IndexOf(selectedProducer) ?? -1;
                 List<string> producerListForNewList = new List<string>();
                 foreach (ProducerModel newProducer in newProducerList)
                 {
@@ -343,6 +311,7 @@ namespace EVA_Catalogue.ViewModels
                 SeriesList = CreateSeriesListForListBox();
 
                 ProducerList = CreateProducerListForListBox();
+                SelectedProducer = GetNextSelection(ProducerList, selectedIndex);
             }
             return NewProducerList;
         }
@@ -350,6 +319,7 @@ namespace EVA_Catalogue.ViewModels
         {
             if (selectedNewProducer != null)
             {
+                int selectedIndex = NewProducerList?.IndexOf(selectedNewProducer) ?? -1;
                 List<string> producerListForNewList = new List<string>();
                 foreach (ProducerModel newProducer in newProducerList)
                 {
@@ -371,6 +341,7 @@ namespace EVA_Catalogue.ViewModels
                 NewSeriesList = UpdateNewSeriesList();
                 SeriesList = CreateSeriesListForListBox();
                 ProducerList = CreateProducerListForListBox();
+                SelectedNewProducer = GetNextSelection(NewProducerList, selectedIndex);
             }
             return NewProducerList;
         }
@@ -379,6 +350,7 @@ namespace EVA_Catalogue.ViewModels
         {
             if (selectedSeries != null)
             {
+                int selectedIndex = SeriesList?.IndexOf(selectedSeries) ?? -1;
                 List<string> seriesListForNewList = new List<string>();
                 foreach (ProducerModel newSeries in newSeriesList)
                 {
@@ -395,6 +367,7 @@ namespace EVA_Catalogue.ViewModels
                 NewSeriesList = newSeriesList;
                 SeriesList = CreateSeriesList();
                 SeriesList = CreateSeriesListForListBox();
+                SelectedSeries = GetNextSelection(SeriesList, selectedIndex);
             }
             return NewSeriesList;
         }
@@ -403,6 +376,7 @@ namespace EVA_Catalogue.ViewModels
         {
             if (selectedNewSeries != null)
             {
+                int selectedIndex = NewSeriesList?.IndexOf(selectedNewSeries) ?? -1;
                 List<string> seriesListForNewList = new List<string>();
                 foreach (ProducerModel newSeries in newSeriesList)
                 {
@@ -423,8 +397,18 @@ namespace EVA_Catalogue.ViewModels
                 NewSeriesList = newSeriesList;
                 SeriesList = CreateSeriesList();
                 SeriesList = CreateSeriesListForListBox();
+                SelectedNewSeries = GetNextSelection(NewSeriesList, selectedIndex);
             }
             return NewSeriesList;
+        }
+
+        private static ProducerModel GetNextSelection(List<ProducerModel> items, int removedIndex)
+        {
+            if (items == null || items.Count == 0)
+                return null;
+
+            int nextIndex = removedIndex < 0 ? 0 : System.Math.Min(removedIndex, items.Count - 1);
+            return items[nextIndex];
         }
 
 
@@ -461,7 +445,6 @@ namespace EVA_Catalogue.ViewModels
                 return ProducerList;
             }
             catch {
-                MessageBox.Show("Нет загруженных каталогов");
                 return ProducerList;
             }
         }
@@ -623,9 +606,17 @@ namespace EVA_Catalogue.ViewModels
             if (dialog.ShowDialog() != true) return;
             try
             {
+                List<string> availableDeviceTypes = SettingsProfileService.Instance.GetImportDeviceTypes(
+                    SettingsProfileService.AutomaticMode, dialog.FileName);
+                if (availableDeviceTypes.Count == 0)
+                    throw new System.IO.InvalidDataException("В файле нет настроек оборудования.");
+                Window owner = Application.Current.Windows.Cast<Window>().FirstOrDefault(window => window.IsActive);
+                List<string> selectedDeviceTypes = SettingsImportDeviceDialog.Show(availableDeviceTypes, owner);
+                if (selectedDeviceTypes == null) return;
+
                 Excel.Workbook workbook = AppManager.ExcelApp.ActiveWorkbook;
                 SettingsProfileService.Instance.Import(SettingsProfileService.AutomaticMode, dialog.FileName,
-                    workbook.FullName, workbook.Name);
+                    workbook.FullName, workbook.Name, selectedDeviceTypes);
                 commonListForSettings = new List<string>[2];
                 ProducerList = CreateProducerList();
                 LoadSettings(SettingsHelper.Instance.TypeOfDevice);
@@ -710,6 +701,7 @@ namespace EVA_Catalogue.ViewModels
 
                 //SelectedNewSeries = selectedNewSeries;
                 NewSeriesList = newSeriesList;
+                SelectedNewSeries = NewSeriesList.FirstOrDefault(item => item.series == selected);
 
             }
             return NewSeriesList;
@@ -719,6 +711,7 @@ namespace EVA_Catalogue.ViewModels
         {
             if (selectedNewSeries != null)
             {
+                string selected = selectedNewSeries.series;
                 List<string> seriesListForNewList1 = new List<string>();
 
                 foreach (ProducerModel newSeries in newSeriesList)
@@ -755,6 +748,7 @@ namespace EVA_Catalogue.ViewModels
                     NewSeriesList.Add(producerModel);
                 }
                 NewSeriesList = newSeriesList;
+                SelectedNewSeries = NewSeriesList.FirstOrDefault(item => item.series == selected);
             }
             return NewSeriesList;
         }
@@ -763,6 +757,7 @@ namespace EVA_Catalogue.ViewModels
         {
             if (selectedNewProducer != null)
             {
+                string selected = selectedNewProducer.producer;
                 List<string> producerListForNewList1 = new List<string>();
 
                 foreach (ProducerModel newProducer in newProducerList)
@@ -799,6 +794,7 @@ namespace EVA_Catalogue.ViewModels
                     NewProducerList.Add(producerModel);
                 }
                 NewProducerList = newProducerList;
+                SelectedNewProducer = NewProducerList.FirstOrDefault(item => item.producer == selected);
             }
             return NewProducerList;
         }
@@ -807,6 +803,7 @@ namespace EVA_Catalogue.ViewModels
         {
             if (selectedNewProducer != null)
             {
+                string selected = selectedNewProducer.producer;
                 List<string> producerListForNewList1 = new List<string>();
 
                 foreach (ProducerModel newProducer in newProducerList)
@@ -843,6 +840,7 @@ namespace EVA_Catalogue.ViewModels
                     NewProducerList.Add(producerModel);
                 }
                 NewProducerList = newProducerList;
+                SelectedNewProducer = NewProducerList.FirstOrDefault(item => item.producer == selected);
             }
             return NewProducerList;
         }

@@ -73,6 +73,20 @@ namespace EVA_Catalogue
             {
                 isExcelDataAvailable = value;
                 NotifyPropertyChanged("IsExcelDataAvailable");
+                NotifyPropertyChanged(nameof(CatalogueStatusMessage));
+            }
+        }
+        public string CatalogueStatusMessage
+        {
+            get
+            {
+                if (IsExcelDataAvailable)
+                    return string.Empty;
+                if (string.IsNullOrWhiteSpace(LinkForDB))
+                    return "Папка с каталогами не выбрана.\nУкажите путь к папке в настройках каталогов.";
+                if (!Directory.Exists(LinkForDB))
+                    return "Папка с каталогами недоступна или была перемещена.\nУкажите путь к папке заново.";
+                return "Excel-каталоги оборудования в выбранной папке не найдены.\nДобавьте файлы каталогов и нажмите «Обновить каталоги».";
             }
         }
         public string linkForDB;
@@ -83,6 +97,7 @@ namespace EVA_Catalogue
             {
                 linkForDB = value;
                 NotifyPropertyChanged("LinkForDB");
+                NotifyPropertyChanged(nameof(CatalogueStatusMessage));
             }
         }
 
@@ -91,7 +106,7 @@ namespace EVA_Catalogue
         public MainViewModel()
         {
             IsExcelDataAvailable = new PathHelper().CheckLinkForDB();
-            LinkForDB = new PathHelper().GetLinkForDB(); 
+            LinkForDB = new PathHelper().GetLinkForDB();
             if (IsExcelDataAvailable)
             {
                 CatalogueCacheService.Instance.ConfigureDirectory(LinkForDB);
@@ -100,6 +115,7 @@ namespace EVA_Catalogue
                 {
                     Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
                     CatalogueCacheService.Instance.RefreshAll();
+                    IsExcelDataAvailable = CatalogueCacheService.Instance.HasCatalogueFiles();
                 }
                 catch { /* Ошибка будет показана при обращении к конкретному каталогу. */ }
                 finally { Mouse.OverrideCursor = previousCursor; }
@@ -110,6 +126,8 @@ namespace EVA_Catalogue
             EquipmentSelection = new RelayCommand(param => SayResult());
 
             RefreshCataloguesCommand = new RelayCommand(param => RefreshCatalogues());
+            ExportSettingsCommand = new RelayCommand(param => ExportSettings());
+            ImportSettingsCommand = new RelayCommand(param => ImportSettings());
             OpenWindowSettingsModularCircuitBreakersCommand = new RelayCommand(param => OpenWindowSettingsModularCircuitBreakers());
             OpenWindowSettingsModularResidualCurrentBreakersCommand = new RelayCommand(param => OpenWindowSettingsModularResidualCurrentBreakers());
             LoadAutomaticSelectionState();
@@ -140,8 +158,20 @@ namespace EVA_Catalogue
                 Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
                 PathHelper pathHelper = new PathHelper();
                 string directory = pathHelper.PathDBHelper();
+                LinkForDB = directory;
+                if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory))
+                {
+                    IsExcelDataAvailable = false;
+                    string message = string.IsNullOrWhiteSpace(directory)
+                        ? "Папка с каталогами не выбрана. Укажите путь к папке в настройках каталогов."
+                        : "Папка с каталогами недоступна или была перемещена. Укажите путь к папке заново.";
+                    System.Windows.MessageBox.Show(message, "Обновление каталогов",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
                 CatalogueCacheService.Instance.ConfigureDirectory(directory);
                 int refreshed = CatalogueCacheService.Instance.RefreshAll(true);
+                IsExcelDataAvailable = CatalogueCacheService.Instance.HasCatalogueFiles();
                 System.Windows.MessageBox.Show(
                     refreshed == 0 ? "Excel-каталоги не найдены." : $"Каталоги обновлены: {refreshed}.",
                     "Обновление каталогов", MessageBoxButton.OK, MessageBoxImage.Information);
@@ -154,6 +184,65 @@ namespace EVA_Catalogue
             finally
             {
                 Mouse.OverrideCursor = previousCursor;
+            }
+        }
+
+        private void ExportSettings()
+        {
+            var dialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Filter = "Настройки EVA (*.evasettings)|*.evasettings",
+                DefaultExt = ".evasettings",
+                AddExtension = true,
+                FileName = "EVA_Автоматический_" + DateTime.Now.ToString("yyyy-MM-dd")
+            };
+            if (dialog.ShowDialog() != true) return;
+
+            try
+            {
+                Excel.Workbook workbook = AppManager.ExcelApp.ActiveWorkbook;
+                SettingsProfileService.Instance.Export(SettingsProfileService.AutomaticMode, dialog.FileName,
+                    workbook.FullName, workbook.Name, new PathHelper().PathSettingsHelper());
+                System.Windows.MessageBox.Show("Настройки экспортированы.", "Настройки",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show("Не удалось экспортировать настройки: " + ex.Message,
+                    "Настройки", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+        }
+
+        private void ImportSettings()
+        {
+            var dialog = new Microsoft.Win32.OpenFileDialog
+            {
+                Filter = "Настройки EVA (*.evasettings)|*.evasettings"
+            };
+            if (dialog.ShowDialog() != true) return;
+
+            try
+            {
+                List<string> availableDeviceTypes = SettingsProfileService.Instance.GetImportDeviceTypes(
+                    SettingsProfileService.AutomaticMode, dialog.FileName);
+                if (availableDeviceTypes.Count == 0)
+                    throw new InvalidDataException("В файле нет настроек оборудования.");
+
+                Window owner = System.Windows.Application.Current.Windows.Cast<Window>()
+                    .FirstOrDefault(window => window.IsActive);
+                List<string> selectedDeviceTypes = SettingsImportDeviceDialog.Show(availableDeviceTypes, owner);
+                if (selectedDeviceTypes == null) return;
+
+                Excel.Workbook workbook = AppManager.ExcelApp.ActiveWorkbook;
+                SettingsProfileService.Instance.Import(SettingsProfileService.AutomaticMode, dialog.FileName,
+                    workbook.FullName, workbook.Name, selectedDeviceTypes);
+                System.Windows.MessageBox.Show("Настройки импортированы.", "Настройки",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show("Не удалось импортировать настройки: " + ex.Message,
+                    "Настройки", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
 
@@ -249,31 +338,65 @@ namespace EVA_Catalogue
                         }
                     }
                 
-                    if (producerListForSettingsQF.All(s => string.IsNullOrEmpty(s)) & IsAutomaticSelectionEnabledForModularCircuitBreakers == true)
-                    {
-                        System.Windows.MessageBox.Show("Производители " +"модульных автоматических выключателей" + " не выбраны",
-        "Предупреждение",
-        MessageBoxButton.OK,
-        MessageBoxImage.Information);
-                    IsAutomaticSelectionEnabledForModularCircuitBreakers = false;
-                    Mouse.OverrideCursor = null;
-                }
-                    if (producerListForSettingsQFD.All(s => string.IsNullOrEmpty(s)) & IsAutomaticSelectionEnabledForModularResidualCircuitBreakers == true)
-                    {
-                        System.Windows.MessageBox.Show("Производители " + "модульных автоматических выключателей дифференциального тока" + " не выбраны",
-        "Предупреждение",
-        MessageBoxButton.OK,
-        MessageBoxImage.Information);
-                    IsAutomaticSelectionEnabledForModularResidualCircuitBreakers = false;
-                    Mouse.OverrideCursor = null;
+                bool selectQf = IsAutomaticSelectionEnabledForModularCircuitBreakers;
+                bool selectQfd = IsAutomaticSelectionEnabledForModularResidualCircuitBreakers;
+                bool qfProducersMissing = selectQf && !producerListForSettingsQF.Any(s => !string.IsNullOrWhiteSpace(s));
+                bool qfdProducersMissing = selectQfd && !producerListForSettingsQFD.Any(s => !string.IsNullOrWhiteSpace(s));
 
+                if (qfProducersMissing || qfdProducersMissing)
+                {
+                    Mouse.OverrideCursor = null;
+                    System.Windows.Application.Current.MainWindow.IsEnabled = true;
+
+                    if (selectQf && selectQfd && qfProducersMissing && qfdProducersMissing)
+                    {
+                        System.Windows.MessageBox.Show(
+                            "Для автоматического подбора не выбраны производители ни для модульных АВ, ни для модульных АВДТ.\nОткройте настройки и выберите производителей.",
+                            "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Information);
+                        return;
+                    }
+
+                    if (selectQf && selectQfd && qfdProducersMissing)
+                    {
+                        MessageBoxResult result = System.Windows.MessageBox.Show(
+                            "Для модульных АВДТ не выбраны производители.\nПродолжить подбор только для модульных АВ?",
+                            "Предупреждение", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (result != MessageBoxResult.Yes)
+                        {
+                            return;
+                        }
+                        selectQfd = false;
+                    }
+                    else if (selectQf && selectQfd && qfProducersMissing)
+                    {
+                        MessageBoxResult result = System.Windows.MessageBox.Show(
+                            "Для модульных АВ не выбраны производители.\nПродолжить подбор только для модульных АВДТ?",
+                            "Предупреждение", MessageBoxButton.YesNo, MessageBoxImage.Question);
+                        if (result != MessageBoxResult.Yes)
+                        {
+                            return;
+                        }
+                        selectQf = false;
+                    }
+                    else
+                    {
+                        string deviceType = qfProducersMissing ? "модульных АВ" : "модульных АВДТ";
+                        System.Windows.MessageBox.Show(
+                            "Для " + deviceType + " не выбраны производители.\nОткройте настройки и выберите производителей.",
+                            "Предупреждение", MessageBoxButton.OK, MessageBoxImage.Information);
+                        return;
+                    }
+
+                    Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+                    System.Windows.Application.Current.MainWindow.IsEnabled = false;
                 }
 
-                if (((producerListForSettingsQF.All(s => !string.IsNullOrEmpty(s)) & producerListForSettingsQF.Count!=0) & IsAutomaticSelectionEnabledForModularCircuitBreakers == true) | ((producerListForSettingsQFD.All(s => !string.IsNullOrEmpty(s)) & producerListForSettingsQFD.Count != 0 )& IsAutomaticSelectionEnabledForModularResidualCircuitBreakers == true))
+                if ((selectQf && producerListForSettingsQF.Any(s => !string.IsNullOrWhiteSpace(s))) |
+                    (selectQfd && producerListForSettingsQFD.Any(s => !string.IsNullOrWhiteSpace(s))))
                     {
                     Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
                     EquipmentSelection es = new EquipmentSelection();
-                    List<List<string>> failedIteams =es.SelectDevicecs_ModularCircuitBreaker(producerListForSettingsQF, seriesListForSettingsQF, producerListForSettingsQFD, seriesListForSettingsQFD, isAutomaticSelectionEnabledForModularCircuitBreakers,isAutomaticSelectionEnabledForModularResidualCircuitBreakers, selectedSheetName);
+                    List<List<string>> failedIteams =es.SelectDevicecs_ModularCircuitBreaker(producerListForSettingsQF, seriesListForSettingsQF, producerListForSettingsQFD, seriesListForSettingsQFD, selectQf, selectQfd, selectedSheetName);
 
                    
                     var sb = new System.Text.StringBuilder();
@@ -288,18 +411,22 @@ namespace EVA_Catalogue
                     }
                     if (failedQfCount > 0)
                     {
-                        sb.AppendLine("Модульные автоматические выключатели — " + failedQfCount);
+                        sb.AppendLine("Модульные автоматические выключатели - " + failedQfCount);
+                        sb.AppendLine();
                         sb.Append(TextForReport(failedIteams[0]));
                         sb.AppendLine();
                     }
                     if (failedQfdCount > 0)
                     {
-                        sb.AppendLine("Дифференциальные автоматические выключатели — " + failedQfdCount);
+                        sb.AppendLine("Модульные дифференциальные автоматические выключатели - " + failedQfdCount);
+                        sb.AppendLine();
                         sb.Append(TextForReport(failedIteams[1]));
                         sb.AppendLine();
                     }
                     if (failedTotalCount > 0)
                     {
+                        sb.AppendLine("Что необходимо проверить");
+                        sb.AppendLine();
                         sb.AppendLine("Проверьте выбранные каталоги производителей и серий, а также параметры аппаратов.");
                         sb.AppendLine();
                     }
@@ -314,7 +441,10 @@ namespace EVA_Catalogue
                             sb.AppendLine();
                         }
                         AppendQfParameters(sb, "Для АВДТ:");
-                        sb.AppendLine("• Ток утечки dI, мА");
+                        sb.AppendLine("  • Ток утечки dI, мА (строка 22)");
+                        sb.AppendLine("  • Тип дифференциального тока, например A (строка 22)");
+                        sb.AppendLine();
+                        sb.AppendLine("    Если тип не указан, по умолчанию выбирается тип A.");
                     }
                     Mouse.OverrideCursor = null;
                     string resultText = sb.ToString();
@@ -356,7 +486,9 @@ namespace EVA_Catalogue
                         // если есть предыдущий лист, добавляем его с колонками
                         if (currentSheet != null)
                         {
-                            sb.AppendLine(currentSheet + ": " + string.Join(", ", columns));
+                            sb.AppendLine("  " + currentSheet + ":");
+                            sb.AppendLine("  " + string.Join(", ", columns));
+                            sb.AppendLine();
                         }
 
                         // начинаем новый лист
@@ -371,7 +503,9 @@ namespace EVA_Catalogue
                 // добавляем последний лист
                 if (currentSheet != null)
                 {
-                    sb.AppendLine(currentSheet + ": " + string.Join(", ", columns));
+                    sb.AppendLine("  " + currentSheet + ":");
+                    sb.AppendLine("  " + string.Join(", ", columns));
+                    sb.AppendLine();
                 }
             
             return sb.ToString();
@@ -400,12 +534,17 @@ namespace EVA_Catalogue
         private static void AppendQfParameters(System.Text.StringBuilder sb, string title)
         {
             sb.AppendLine(title);
-            sb.AppendLine("• Количество фаз");
-            sb.AppendLine("• Ток расцепителя Iав, А");
-            sb.AppendLine("• Характеристика срабатывания");
-            sb.AppendLine("• Ном. отключ. способность, кА, или:");
-            sb.AppendLine("  — МАХ Ток КЗ на РП Iкд3ф, кА");
-            sb.AppendLine("  — МАХ Ток КЗ на РП Iкд1ф, кА");
+            sb.AppendLine();
+            sb.AppendLine("  • Количество фаз (строка 11)");
+            sb.AppendLine("  • Ток расцепителя Iав, А (строка 17)");
+            sb.AppendLine("  • Характеристика срабатывания (строка 18)");
+            sb.AppendLine("  • Ном. отключ. способность, кА (строка 19)");
+            sb.AppendLine();
+            sb.AppendLine("  Если отключающая способность не указана:");
+            sb.AppendLine();
+            sb.AppendLine("    - МАХ Ток КЗ на РП Iкд3ф, кА (строка 150)");
+            sb.AppendLine("    - МАХ Ток КЗ на РП Iкд1ф, кА (строка 151)");
+            sb.AppendLine();
         }
         //private void SaveFolderDialog()
         //{
@@ -493,6 +632,8 @@ namespace EVA_Catalogue
         public ICommand OpenWindowSettingsModularCircuitBreakersCommand { set; get; }
         public ICommand OpenWindowSettingsModularResidualCurrentBreakersCommand { get; }
         public ICommand RefreshCataloguesCommand { get; set; }
+        public ICommand ExportSettingsCommand { get; set; }
+        public ICommand ImportSettingsCommand { get; set; }
 
     }
 

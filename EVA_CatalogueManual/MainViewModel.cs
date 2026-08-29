@@ -41,6 +41,7 @@ namespace EVA_CatalogueManual
         public const string TableModularResidualCurrentCircuitBreakers = "Модульные автоматические выключатели дифференциального тока";
         private const string InfoDeviceNotFound = "По текущим параметрам оборудование не подобрано";
         Excel.Workbook excelWB = AppManager.ExcelApp.ActiveWorkbook;
+        private bool isApplyingSelection;
 
 
 
@@ -54,6 +55,23 @@ namespace EVA_CatalogueManual
             {
                 isExcelDataAvailable = value;
                 NotifyPropertyChanged("IsExcelDataAvailable");
+                NotifyPropertyChanged(nameof(CatalogueStatusMessage));
+                NotifyPropertyChanged(nameof(CanSaveConfiguration));
+                NotifyPropertyChanged(nameof(CanResetConfiguration));
+                NotifyPropertyChanged(nameof(CanWriteEquipment));
+            }
+        }
+        public string CatalogueStatusMessage
+        {
+            get
+            {
+                if (IsExcelDataAvailable)
+                    return string.Empty;
+                if (string.IsNullOrWhiteSpace(LinkForDB))
+                    return "Папка с каталогами не выбрана.\nУкажите путь к папке в настройках каталогов.";
+                if (!Directory.Exists(LinkForDB))
+                    return "Папка с каталогами недоступна или была перемещена.\nУкажите путь к папке заново.";
+                return "Excel-каталоги оборудования в выбранной папке не найдены.\nДобавьте файлы каталогов и нажмите «Обновить каталоги».";
             }
         }
         public string linkForDB;
@@ -64,6 +82,7 @@ namespace EVA_CatalogueManual
             {
                 linkForDB = value;
                 NotifyPropertyChanged("LinkForDB");
+                NotifyPropertyChanged(nameof(CatalogueStatusMessage));
             }
         }
         public string chosenTypeOfDevice;
@@ -174,7 +193,7 @@ namespace EVA_CatalogueManual
             get { return doesConfigurationExist; }
             set
             {
-                isExcelDataAvailable = value;
+                doesConfigurationExist = value;
                 NotifyPropertyChanged("DoesConfigurationExist");
                 NotifyPropertyChanged("CanResetConfiguration");
 
@@ -186,7 +205,7 @@ namespace EVA_CatalogueManual
             get { return isAnyProducerSelected; }
             set
             {
-                isExcelDataAvailable = value;
+                isAnyProducerSelected = value;
                 NotifyPropertyChanged("IsAnyProducerSelected");
                 NotifyPropertyChanged("CanSaveConfiguration");
             }
@@ -211,13 +230,14 @@ namespace EVA_CatalogueManual
             {
                 isRowSelected = value;
                 NotifyPropertyChanged(nameof(IsRowSelected));
+                NotifyPropertyChanged(nameof(CanWriteEquipment));
             }
         }
         public bool CanSaveConfiguration
         {
             get
             {
-                return isDeviceSelected &&
+                return IsExcelDataAvailable && isDeviceSelected &&
                        isAnyProducerSelected;
             }
         }
@@ -225,10 +245,11 @@ namespace EVA_CatalogueManual
         {
             get
             {
-                return isDeviceSelected &&
+                return IsExcelDataAvailable && isDeviceSelected &&
                        doesConfigurationExist;
             }
         }
+        public bool CanWriteEquipment => IsExcelDataAvailable && IsRowSelected;
         private void CancelCommand()
         {
             System.Windows.Application.Current.MainWindow.Close();
@@ -251,8 +272,7 @@ namespace EVA_CatalogueManual
 
             // затем можно получить начальное значение
             IsExcelDataAvailable = new PathHelper().CheckLinkForDB();
-   
-                LinkForDB = new PathHelper().GetLinkForDB();
+            LinkForDB = new PathHelper().GetLinkForDB();
                 if (IsExcelDataAvailable)
                 {
                     CatalogueCacheService.Instance.ConfigureDirectory(LinkForDB);
@@ -261,6 +281,7 @@ namespace EVA_CatalogueManual
                     {
                         Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
                         CatalogueCacheService.Instance.RefreshAll();
+                        IsExcelDataAvailable = CatalogueCacheService.Instance.HasCatalogueFiles();
                     }
                     catch { /* Повторная попытка будет выполнена при обращении к каталогу. */ }
                     finally { Mouse.OverrideCursor = previousCursor; }
@@ -289,10 +310,10 @@ namespace EVA_CatalogueManual
                 Accept = new RelayCommand(param => OkCommand()); //проброс команды
                 Cancel = new RelayCommand(param => CancelCommand());
                 EquipmentSelection = new RelayCommand(param => WriteDeviceDataToExcel());
-                SaveConfigurationCommand = new RelayCommand(param => SaveConfiguration());
                 ResetConfigurationCommand = new RelayCommand(param => ResetChosenConfiguration());
                 ImportSettingsCommand = new RelayCommand(param => ImportSettings());
                 ExportSettingsCommand = new RelayCommand(param => ExportSettings());
+                RefreshCataloguesCommand = new RelayCommand(param => RefreshCatalogues());
             }
         
 
@@ -310,8 +331,14 @@ namespace EVA_CatalogueManual
         }
         private void SaveConfiguration()
         {
+            NewProducerList = (ProducerList ?? new List<ProducerModel>())
+                .Where(producer => producer.IsSelected)
+                .ToList();
+            NewSeriesList = (SeriesList ?? new List<SeriesModel>())
+                .Where(series => series.IsSelected)
+                .ToList();
 
-            new Configurations().CreateConfiguration(newProducerList, newSeriesList, chosenTypeOfDevice);
+            new Configurations().CreateConfiguration(NewProducerList, NewSeriesList, chosenTypeOfDevice);
             CheckConfiguration();
             CheckIfAnyProducerChecked();
         }
@@ -402,7 +429,6 @@ namespace EVA_CatalogueManual
                 }
                 catch
                 {
-                    MessageBox.Show("Нет загруженных каталогов");
                     return ProducerList;
                 }
             }
@@ -434,7 +460,6 @@ namespace EVA_CatalogueManual
                 }
                 catch
                 {
-                    MessageBox.Show("Нет загруженных каталогов");
                     return ProducerList;
                 }
             }
@@ -455,6 +480,50 @@ namespace EVA_CatalogueManual
             {
                 Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
                 return CatalogueCacheService.Instance.GetProducerNames(requiredSheet);
+            }
+            finally
+            {
+                Mouse.OverrideCursor = previousCursor;
+            }
+        }
+        private void RefreshCatalogues()
+        {
+            var previousCursor = Mouse.OverrideCursor;
+            try
+            {
+                Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
+                string directory = new PathHelper().PathDBHelper();
+                LinkForDB = directory;
+                if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory))
+                {
+                    IsExcelDataAvailable = false;
+                    string message = string.IsNullOrWhiteSpace(directory)
+                        ? "Папка с каталогами не выбрана. Укажите путь к папке в настройках каталогов."
+                        : "Папка с каталогами недоступна или была перемещена. Укажите путь к папке заново.";
+                    MessageBox.Show(message, "Обновление каталогов",
+                        MessageBoxButton.OK, MessageBoxImage.Information);
+                    return;
+                }
+                CatalogueCacheService.Instance.ConfigureDirectory(directory);
+                int refreshed = CatalogueCacheService.Instance.RefreshAll(true);
+                IsExcelDataAvailable = CatalogueCacheService.Instance.HasCatalogueFiles();
+                if (IsExcelDataAvailable)
+                {
+                    ProducerList = CreateProducerList();
+                    CheckIfAnyProducerChecked();
+                    CheckConfiguration();
+                    CheckIfDeviceSelected();
+                }
+                MessageBox.Show(
+                    IsExcelDataAvailable
+                        ? "Каталоги обновлены: " + refreshed + "."
+                        : "Excel-каталоги не найдены.",
+                    "Обновление каталогов", MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Не удалось обновить каталоги: " + ex.Message,
+                    "Обновление каталогов", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
             finally
             {
@@ -487,9 +556,18 @@ namespace EVA_CatalogueManual
             if (dialog.ShowDialog() != true) return;
             try
             {
+                List<string> availableDeviceTypes = SettingsProfileService.Instance.GetImportDeviceTypes(
+                    SettingsProfileService.ManualMode, dialog.FileName);
+                if (availableDeviceTypes.Count == 0)
+                    throw new System.IO.InvalidDataException("В файле нет настроек оборудования.");
+                System.Windows.Window owner = System.Windows.Application.Current.Windows
+                    .Cast<System.Windows.Window>().FirstOrDefault(window => window.IsActive);
+                List<string> selectedDeviceTypes = SettingsImportDeviceDialog.Show(availableDeviceTypes, owner);
+                if (selectedDeviceTypes == null) return;
+
                 Excel.Workbook workbook = AppManager.ExcelApp.ActiveWorkbook;
                 SettingsProfileService.Instance.Import(SettingsProfileService.ManualMode, dialog.FileName,
-                    workbook.FullName, workbook.Name);
+                    workbook.FullName, workbook.Name, selectedDeviceTypes);
                 ProducerList = CreateProducerList();
                 CheckIfAnyProducerChecked();
                 CheckConfiguration();
@@ -509,9 +587,17 @@ namespace EVA_CatalogueManual
                 return;
 
             var set = new HashSet<string>(selectedProducers);
-
-            foreach (var producer in ProducerList)
-                producer.IsSelected = set.Contains(producer.producer);
+            bool previousValue = isApplyingSelection;
+            isApplyingSelection = true;
+            try
+            {
+                foreach (var producer in ProducerList)
+                    producer.IsSelected = set.Contains(producer.producer);
+            }
+            finally
+            {
+                isApplyingSelection = previousValue;
+            }
         }
         private void ApplySeriesSelection(List<string> selectedSeries)
         {
@@ -519,9 +605,17 @@ namespace EVA_CatalogueManual
                 return;
 
             var set = new HashSet<string>(selectedSeries);
-
-            foreach (var series in SeriesList)
-                series.IsSelected = set.Contains(series.series);
+            bool previousValue = isApplyingSelection;
+            isApplyingSelection = true;
+            try
+            {
+                foreach (var series in SeriesList)
+                    series.IsSelected = set.Contains(series.series);
+            }
+            finally
+            {
+                isApplyingSelection = previousValue;
+            }
         }
         private List<SeriesModel> CreateSeriesList()  // формирование списка серий оборудования для выбранного производителя для ComboBox
         {
@@ -569,6 +663,8 @@ namespace EVA_CatalogueManual
         {
             if (e.PropertyName == nameof(ProducerModel.IsSelected))
             {
+                bool saveAfterChange = !isApplyingSelection;
+                bool seriesListWasAlreadyDisplayed = SeriesList != null && SeriesList.Count > 0;
                 List<string> selectedSeries = SeriesList?
                     .Where(series => series.IsSelected)
                     .Select(series => series.series)
@@ -583,10 +679,14 @@ namespace EVA_CatalogueManual
                 CheckIfDeviceSelected();
                 // Обновляем SeriesList
                 SeriesList = CreateSeriesList();
-                if (selectedSeries != null)
+                if (seriesListWasAlreadyDisplayed && selectedSeries != null)
                 {
                     ApplySeriesSelection(selectedSeries);
                     UpdateNewSeriesList();
+                }
+                if (saveAfterChange)
+                {
+                    SaveConfiguration();
                 }
             }
         }
@@ -596,6 +696,10 @@ namespace EVA_CatalogueManual
             {
                 // Обновляем список выбранных серий
                 UpdateNewSeriesList();
+                if (!isApplyingSelection)
+                {
+                    SaveConfiguration();
+                }
             }
         }
         private void ChosenTypeOfDevice_PropertyChanged(object sender, PropertyChangedEventArgs e)
@@ -757,10 +861,10 @@ namespace EVA_CatalogueManual
         public ICommand Cancel { get; }
         public ICommand ChosenTypeOfDeviceCommand { get; set; }
         public ICommand EquipmentSelection { protected set; get; }
-        public ICommand SaveConfigurationCommand { get; set; }
         public ICommand ResetConfigurationCommand { get; set; }
         public ICommand ImportSettingsCommand { get; set; }
         public ICommand ExportSettingsCommand { get; set; }
+        public ICommand RefreshCataloguesCommand { get; set; }
 
 
     }

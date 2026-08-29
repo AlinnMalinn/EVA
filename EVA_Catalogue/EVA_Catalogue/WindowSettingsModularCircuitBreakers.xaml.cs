@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Interop;
+using EVA_Catalogue_Shared;
 
 namespace EVA_Catalogue
 {
@@ -31,15 +32,18 @@ namespace EVA_Catalogue
         private static extern IntPtr SendMessage(IntPtr hWnd, int Msg, IntPtr wParam, IntPtr lParam);
         public WindowSettingsModularCircuitBreakers()
         {
-            var previousCursor = Mouse.OverrideCursor;
-            try
+            using (CatalogueLoadingWindowService.Show("Проверка каталогов…\nПожалуйста, подождите."))
             {
-                Mouse.OverrideCursor = Cursors.Wait;
-                InitializeComponent();
-            }
-            finally
-            {
-                Mouse.OverrideCursor = previousCursor;
+                var previousCursor = Mouse.OverrideCursor;
+                try
+                {
+                    Mouse.OverrideCursor = Cursors.Wait;
+                    InitializeComponent();
+                }
+                finally
+                {
+                    Mouse.OverrideCursor = previousCursor;
+                }
             }
         }
         private void ResizeBorder_MouseDown(object sender, MouseButtonEventArgs e)

@@ -5,6 +5,7 @@ using System.Windows.Input;
 using System.Windows.Controls;
 using System.Windows.Interop;
 using Excel = Microsoft.Office.Interop.Excel;
+using EVA_Catalogue_Shared;
 
 namespace EVA_CatalogueManual
 {
@@ -35,15 +36,18 @@ namespace EVA_CatalogueManual
 
         public MainWindow()
         {
-            var previousCursor = Mouse.OverrideCursor;
-            try
+            using (CatalogueLoadingWindowService.Show("Проверка каталогов…\nПожалуйста, подождите."))
             {
-                Mouse.OverrideCursor = Cursors.Wait;
-                InitializeComponent();
-            }
-            finally
-            {
-                Mouse.OverrideCursor = previousCursor;
+                var previousCursor = Mouse.OverrideCursor;
+                try
+                {
+                    Mouse.OverrideCursor = Cursors.Wait;
+                    InitializeComponent();
+                }
+                finally
+                {
+                    Mouse.OverrideCursor = previousCursor;
+                }
             }
         }
 

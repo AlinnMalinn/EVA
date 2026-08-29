@@ -55,6 +55,34 @@ namespace EVA_Catalogue_DataBaseSetting
             {
                 linkForDB = value;
                 NotifyPropertyChanged("LinkForDB");
+                NotifyPropertyChanged(nameof(CatalogueStatusMessage));
+            }
+        }
+
+        public string CatalogueStatusMessage
+        {
+            get
+            {
+                if (string.IsNullOrWhiteSpace(LinkForDB))
+                    return "Папка с каталогами не выбрана";
+                if (!Directory.Exists(LinkForDB))
+                    return "Указанная папка недоступна";
+
+                try
+                {
+                    int catalogueCount = Directory.EnumerateFiles(LinkForDB)
+                        .Count(file => !Path.GetFileName(file).StartsWith("~$", StringComparison.Ordinal) &&
+                            (string.Equals(Path.GetExtension(file), ".xlsx", StringComparison.OrdinalIgnoreCase) ||
+                             string.Equals(Path.GetExtension(file), ".xlsm", StringComparison.OrdinalIgnoreCase)));
+
+                    return catalogueCount == 0
+                        ? "Каталоги не найдены"
+                        : "Каталоги найдены: " + catalogueCount;
+                }
+                catch
+                {
+                    return "Указанная папка недоступна";
+                }
             }
         }
 
@@ -68,7 +96,6 @@ namespace EVA_Catalogue_DataBaseSetting
             Cancel = new RelayCommand(param => CancelCommand());
             
             SaveFolderDialogCommand = new RelayCommand(param => SaveFolderDialog());           
-           
 
         }
 
@@ -135,7 +162,9 @@ namespace EVA_Catalogue_DataBaseSetting
             }
             catch (Exception ex)
             {
-                System.Windows.MessageBox.Show("Ошибка: " + ex.Message);
+                System.Windows.MessageBox.Show(
+                    "Не удалось выбрать папку с каталогами: " + ex.Message,
+                    "Настройка каталогов", MessageBoxButton.OK, MessageBoxImage.Warning);
             }
         }
           

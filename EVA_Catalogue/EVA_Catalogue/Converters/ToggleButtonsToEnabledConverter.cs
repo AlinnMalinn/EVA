@@ -18,11 +18,13 @@ namespace EVA_Catalogue.Converters
  
         public object Convert(object[] values, Type targetType, object parameter, CultureInfo culture)
         {
-            if (values.Length == 2 &&
+            if (values.Length >= 2 &&
                 values[0] is bool isChecked1 &&
                 values[1] is bool isChecked2)
             {
-                return isChecked1 || isChecked2; // Кнопка активна, если хотя бы один тоггл включён
+                bool cataloguesAvailable = values.Length < 3 ||
+                    (values[2] is bool available && available);
+                return (isChecked1 || isChecked2) && cataloguesAvailable;
             }
             return false;
         }

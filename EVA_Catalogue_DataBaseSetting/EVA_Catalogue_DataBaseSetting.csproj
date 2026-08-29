@@ -160,6 +160,10 @@
       <Project>{80fcc215-ae9b-4874-906e-8e3285ac5144}</Project>
       <Name>EVA_Catalogue</Name>
     </ProjectReference>
+    <ProjectReference Include="..\EVA_Catalogue_Shared\EVA_Catalogue_Shared.csproj">
+      <Project>{9a8ec108-14f3-49d2-9d64-7b0e9601f56c}</Project>
+      <Name>EVA_Catalogue_Shared</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="..\..\repos\EVAvsto\packages\MaterialDesignThemes.4.9.0\build\MaterialDesignThemes.targets" Condition="Exists('..\..\repos\EVAvsto\packages\MaterialDesignThemes.4.9.0\build\MaterialDesignThemes.targets')" />

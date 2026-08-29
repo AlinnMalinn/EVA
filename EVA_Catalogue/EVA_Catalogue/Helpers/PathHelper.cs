@@ -57,8 +57,6 @@ namespace EVA_Catalogue
                 if (Directory.Exists(pathToBD)==true)
                 return true;
             }
-            excelWS.Cells[200, 1].Value = "";
-
             return false;
 
 }

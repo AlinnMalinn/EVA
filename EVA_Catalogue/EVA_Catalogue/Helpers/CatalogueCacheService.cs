@@ -46,6 +46,15 @@ namespace EVA_Catalogue
 
         public string CacheDirectory => cacheDirectory;
 
+        public bool HasCatalogueFiles()
+        {
+            string directory;
+            lock (syncRoot)
+                directory = sourceDirectory;
+            return !string.IsNullOrWhiteSpace(directory) && Directory.Exists(directory) &&
+                EnumerateCatalogueFiles(directory).Any();
+        }
+
         public void ConfigureDirectory(string directory)
         {
             if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory))
