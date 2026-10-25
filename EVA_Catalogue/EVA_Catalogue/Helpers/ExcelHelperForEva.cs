@@ -111,7 +111,7 @@ namespace EVA_Catalogue
 
                 if (typeValue == null)
                 {
-                    Devices[i] = new object[1];
+                    Devices[i] = new object[2];
                     Devices[i][EquipmentSelection.PositionInArray_typeOfDevice] = "0";
                     continue;
                 }
@@ -196,7 +196,7 @@ namespace EVA_Catalogue
                     }
                     else
                     {
-                        Devices[i] = new object[1];
+                        Devices[i] = new object[2];
                         Devices[i][EquipmentSelection.PositionInArray_typeOfDevice] = "0";
                         continue;
                     }
@@ -309,6 +309,8 @@ namespace EVA_Catalogue
     List<string> markOfDeviceList,
     string nameSheet,
     List<string> maximumBreakingCapacity,
+    List<string> additionalTextList,
+    List<string> additionalNumberList,
     bool isQFEnabled,
     bool isQFDEnabled)
         {
@@ -333,8 +335,12 @@ namespace EVA_Catalogue
                 object[,] row16 = GetRowValues(excelWS, 16, startCol, endCol);
                 object[,] row19 = GetRowValues(excelWS, 19, startCol, endCol);
                 object[,] row162 = GetRowValues(excelWS, 162, startCol, endCol);
+                object[,] row163 = GetRowValues(excelWS, 163, startCol, endCol);
                 object[,] row164 = GetRowValues(excelWS, 164, startCol, endCol);
                 object[,] row165 = GetRowValues(excelWS, 165, startCol, endCol);
+                object[,] row166 = GetRowValues(excelWS, 166, startCol, endCol);
+                object[,] row167 = GetRowValues(excelWS, 167, startCol, endCol);
+                object[,] row168 = GetRowValues(excelWS, 168, startCol, endCol);
                 object[,] row275 = GetRowValues(excelWS, 275, startCol, endCol);
 
                 for (int i = 0; i < count; i++)
@@ -355,32 +361,45 @@ namespace EVA_Catalogue
                     if (!canWrite)
                         continue;
 
-                    int arrayCol = i + 1;
+                    int arrayCol = i;
 
                     if (nameOfDeviceList[i] != " ")
                     {
-                        row165[1, arrayCol] = produserNameList[i];
-                        row164[1, arrayCol] = codeOfDeviceList[i];
-                        row162[1, arrayCol] = nameOfDeviceList[i];
-                        row16[1, arrayCol] = markOfDeviceList[i];
-                        row19[1, arrayCol] = maximumBreakingCapacity[i];
-                        row275[1, arrayCol] = deviceInfoList[i];
+                        row165[0, arrayCol] = produserNameList[i];
+                        row164[0, arrayCol] = codeOfDeviceList[i];
+                        row162[0, arrayCol] = nameOfDeviceList[i];
+                        row163[0, arrayCol] = additionalTextList[i];
+                        row16[0, arrayCol] = markOfDeviceList[i];
+                        row19[0, arrayCol] = maximumBreakingCapacity[i];
+                        row166[0, arrayCol] = "шт.";
+                        row167[0, arrayCol] = 1;
+                        float additionalNumber = ToFloat(additionalNumberList[i]);
+                        row168[0, arrayCol] = additionalNumber == 0 ? "" : (object)additionalNumber;
+                        row275[0, arrayCol] = deviceInfoList[i];
                     }
                     else
                     {
-                        row162[1, arrayCol] = nameOfDeviceList[i];
-                        row164[1, arrayCol] = " ";
-                        row165[1, arrayCol] = " ";
-                        row16[1, arrayCol] = " ";
-                        row275[1, arrayCol] = "";
+                        row162[0, arrayCol] = nameOfDeviceList[i];
+                        row163[0, arrayCol] = "";
+                        row164[0, arrayCol] = " ";
+                        row165[0, arrayCol] = " ";
+                        row16[0, arrayCol] = " ";
+                        row166[0, arrayCol] = "";
+                        row167[0, arrayCol] = "";
+                        row168[0, arrayCol] = "";
+                        row275[0, arrayCol] = "";
                     }
                 }
 
                 SetRowValues(excelWS, 16, startCol, endCol, row16);
                 SetRowValues(excelWS, 19, startCol, endCol, row19);
                 SetRowValues(excelWS, 162, startCol, endCol, row162);
+                SetRowValues(excelWS, 163, startCol, endCol, row163);
                 SetRowValues(excelWS, 164, startCol, endCol, row164);
                 SetRowValues(excelWS, 165, startCol, endCol, row165);
+                SetRowValues(excelWS, 166, startCol, endCol, row166);
+                SetRowValues(excelWS, 167, startCol, endCol, row167);
+                SetRowValues(excelWS, 168, startCol, endCol, row168);
                 SetRowValues(excelWS, 275, startCol, endCol, row275);
 
                 excelWB.Save();
@@ -404,14 +423,23 @@ namespace EVA_Catalogue
                 sheet.Cells[row, endCol]
             ];
 
+            int columnCount = endCol - startCol + 1;
+            object[,] result = new object[1, columnCount];
             object value = range.Value2;
 
             if (value is object[,] values)
-                return values;
+            {
+                int sourceRow = values.GetLowerBound(0);
+                int sourceColumn = values.GetLowerBound(1);
+                for (int i = 0; i < columnCount; i++)
+                    result[0, i] = values[sourceRow, sourceColumn + i];
+            }
+            else
+            {
+                result[0, 0] = value;
+            }
 
-            object[,] singleValue = new object[1, 1];
-            singleValue[1, 1] = value;
-            return singleValue;
+            return result;
         }
 
         private void SetRowValues(
@@ -421,11 +449,16 @@ namespace EVA_Catalogue
             int endCol,
             object[,] values)
         {
+            if (startCol == endCol)
+            {
+                sheet.Cells[row, startCol].Value2 = values[0, 0];
+                return;
+            }
+
             Excel.Range range = sheet.Range[
                 sheet.Cells[row, startCol],
                 sheet.Cells[row, endCol]
             ];
-
             range.Value2 = values;
         }
         static bool IsTextRed(Excel.Range cell)
@@ -488,8 +521,12 @@ namespace EVA_Catalogue
                             excelWS.Cells[15, j + 3].Font.Color = 0;
                         }
                         excelWS.Cells[162, 3 + j].Value = "";
+                        excelWS.Cells[163, 3 + j].Value = "";
                         excelWS.Cells[164, 3 + j].Value = "";
                         excelWS.Cells[165, 3 + j].Value = "";
+                        excelWS.Cells[166, 3 + j].Value = "";
+                        excelWS.Cells[167, 3 + j].Value = "";
+                        excelWS.Cells[168, 3 + j].Value = "";
                         excelWS.Cells[16, 3 + j].Value = "";
                         excelWS.Cells[275, 3 + j].Value = "";
                     }

@@ -1,6 +1,7 @@
 ﻿using Microsoft.Office.Interop.Excel;
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -166,8 +167,17 @@ namespace EVA_CatalogueManual
                 activeSheet.Cells[165, i].Value = listOfDevices[4].ToString();
                 activeSheet.Cells[164, i].Value = listOfDevices[1].ToString();
                 activeSheet.Cells[162, i].Value = listOfDevices[0].ToString();
+                activeSheet.Cells[163, i].Value = listOfDevices[6];
                 activeSheet.Cells[16, i].Value = listOfDevices[2].ToString();
                 activeSheet.Cells[19,  i].Value = listOfDevices[3].ToString();
+                activeSheet.Cells[166, i].Value = "шт.";
+                activeSheet.Cells[167, i].Value = 1;
+                if ((double.TryParse(listOfDevices[7], NumberStyles.Any, CultureInfo.CurrentCulture, out double additionalNumber) ||
+                    double.TryParse(listOfDevices[7].Replace(',', '.'), NumberStyles.Any, CultureInfo.InvariantCulture, out additionalNumber)) &&
+                    additionalNumber != 0)
+                    activeSheet.Cells[168, i].Value = additionalNumber;
+                else
+                    activeSheet.Cells[168, i].Value = "";
                 activeSheet.Cells[275, i].Value = listOfDevices[5].ToString();
 
                 //activeCell.Font.Color = 192;
@@ -176,9 +186,13 @@ namespace EVA_CatalogueManual
                     else
             {
                 activeSheet.Cells[162, i].Value = " ";
+                activeSheet.Cells[163, i].Value = "";
                 activeSheet.Cells[164, i].Value = " ";
                 activeSheet.Cells[165, i].Value = " ";
                 activeSheet.Cells[16, i].Value = " ";
+                activeSheet.Cells[166, i].Value = "";
+                activeSheet.Cells[167, i].Value = "";
+                activeSheet.Cells[168, i].Value = "";
                 activeSheet.Cells[275, i].Value = "";
 
             }

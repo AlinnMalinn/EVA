@@ -838,10 +838,15 @@ namespace EVA_CatalogueManual
                 deviceDataForExсel.Add(producerOfDevice);
                 string deviceInfo = SelectedRow["DeviceInfo"]?.ToString();
                 deviceDataForExсel.Add(deviceInfo);
+                deviceDataForExсel.Add(SelectedRow["AdditionalText"]?.ToString() ?? "");
+                deviceDataForExсel.Add(SelectedRow["AdditionalNumber"]?.ToString() ?? "");
             }
             else
             {
                 deviceDataForExсel.Add(" ");
+                deviceDataForExсel.Add("");
+                deviceDataForExсel.Add("");
+                deviceDataForExсel.Add("");
                 deviceDataForExсel.Add("");
                 deviceDataForExсel.Add("");
                 deviceDataForExсel.Add("");

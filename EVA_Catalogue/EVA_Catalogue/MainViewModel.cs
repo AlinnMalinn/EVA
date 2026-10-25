@@ -309,7 +309,8 @@ namespace EVA_Catalogue
             Mouse.OverrideCursor = System.Windows.Input.Cursors.Wait;
             System.Windows.Application.Current.MainWindow.IsEnabled = false;
 
-
+            try
+            {
             PathHelper pathHelper = new PathHelper();
             string sourceDirectorySettings = pathHelper.PathSettingsHelper();
             List<string> producerListForSettingsQF = new List<string>();
@@ -411,14 +412,14 @@ namespace EVA_Catalogue
                     }
                     if (failedQfCount > 0)
                     {
-                        sb.AppendLine("Модульные автоматические выключатели - " + failedQfCount);
+                        sb.AppendLine("Модульные автоматические выключатели - " + failedQfCount + " шт.");
                         sb.AppendLine();
                         sb.Append(TextForReport(failedIteams[0]));
                         sb.AppendLine();
                     }
                     if (failedQfdCount > 0)
                     {
-                        sb.AppendLine("Модульные дифференциальные автоматические выключатели - " + failedQfdCount);
+                        sb.AppendLine("Модульные дифференциальные автоматические выключатели - " + failedQfdCount + " шт.");
                         sb.AppendLine();
                         sb.Append(TextForReport(failedIteams[1]));
                         sb.AppendLine();
@@ -427,12 +428,12 @@ namespace EVA_Catalogue
                     {
                         sb.AppendLine("Что необходимо проверить");
                         sb.AppendLine();
-                        sb.AppendLine("Проверьте выбранные каталоги производителей и серий, а также параметры аппаратов.");
+                        sb.AppendLine("Проверьте выбранные каталоги производителей и серии, а также параметры аппаратов.");
                         sb.AppendLine();
                     }
                     if (failedQfCount > 0)
                     {
-                        AppendQfParameters(sb, "Для АВ:");
+                        AppendQfParameters(sb, "Для модульных АВ:");
                     }
                     if (failedQfdCount > 0)
                     {
@@ -440,11 +441,12 @@ namespace EVA_Catalogue
                         {
                             sb.AppendLine();
                         }
-                        AppendQfParameters(sb, "Для АВДТ:");
+                        AppendQfParameters(sb, "Для модульных АВДТ:");
                         sb.AppendLine("  • Ток утечки dI, мА (строка 22)");
-                        sb.AppendLine("  • Тип дифференциального тока, например A (строка 22)");
+                        sb.AppendLine("  • Тип дифференциального тока (строка 22)");
                         sb.AppendLine();
-                        sb.AppendLine("    Если тип не указан, по умолчанию выбирается тип A.");
+                        sb.AppendLine("Примечание: Если тип дифференциального тока не указан,");
+                        sb.AppendLine("по умолчанию выбирается тип A.");
                     }
                     Mouse.OverrideCursor = null;
                     string resultText = sb.ToString();
@@ -469,7 +471,19 @@ namespace EVA_Catalogue
                
 
             }
-            System.Windows.Application.Current.MainWindow.IsEnabled = true;
+            }
+            catch (Exception ex)
+            {
+                System.Windows.MessageBox.Show(
+                    "Не удалось выполнить автоматический подбор: " + ex.Message,
+                    "Подбор оборудования", MessageBoxButton.OK, MessageBoxImage.Warning);
+            }
+            finally
+            {
+                Mouse.OverrideCursor = null;
+                if (System.Windows.Application.Current.MainWindow != null)
+                    System.Windows.Application.Current.MainWindow.IsEnabled = true;
+            }
         }
 
         private string TextForReport(List<string> failedIteams)
@@ -535,16 +549,20 @@ namespace EVA_Catalogue
         {
             sb.AppendLine(title);
             sb.AppendLine();
-            sb.AppendLine("  • Количество фаз (строка 11)");
-            sb.AppendLine("  • Ток расцепителя Iав, А (строка 17)");
-            sb.AppendLine("  • Характеристика срабатывания (строка 18)");
-            sb.AppendLine("  • Ном. отключ. способность, кА (строка 19)");
+            sb.AppendLine("  ⚠ ПРОВЕРИТЬ В ПЕРВУЮ ОЧЕРЕДЬ");
             sb.AppendLine();
-            sb.AppendLine("  Если отключающая способность не указана:");
+            sb.AppendLine("    Ном. отключ. способность, кА (строка 19)");
+            sb.AppendLine();
+            sb.AppendLine("  Если отключающая способность не указана, проверьте:");
             sb.AppendLine();
             sb.AppendLine("    - МАХ Ток КЗ на РП Iкд3ф, кА (строка 150)");
             sb.AppendLine("    - МАХ Ток КЗ на РП Iкд1ф, кА (строка 151)");
             sb.AppendLine();
+            sb.AppendLine("Также проверьте:");
+            sb.AppendLine();
+            sb.AppendLine("  • Количество фаз (строка 11)");
+            sb.AppendLine("  • Ток расцепителя Iав, А (строка 17)");
+            sb.AppendLine("  • Характеристика срабатывания (строка 18)");
         }
         //private void SaveFolderDialog()
         //{

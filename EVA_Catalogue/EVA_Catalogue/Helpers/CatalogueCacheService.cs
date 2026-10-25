@@ -17,7 +17,7 @@ namespace EVA_Catalogue
     /// </summary>
     public sealed class CatalogueCacheService : IDisposable
     {
-        private const int CacheSchemaVersion = 2;
+        private const int CacheSchemaVersion = 3;
         private static readonly Lazy<CatalogueCacheService> LazyInstance =
             new Lazy<CatalogueCacheService>(() => new CatalogueCacheService());
 
@@ -52,7 +52,7 @@ namespace EVA_Catalogue
             lock (syncRoot)
                 directory = sourceDirectory;
             return !string.IsNullOrWhiteSpace(directory) && Directory.Exists(directory) &&
-                EnumerateCatalogueFiles(directory).Any();
+                EnumerateCatalogueFiles(directory).Any(HasSupportedSheet);
         }
 
         public void ConfigureDirectory(string directory)
@@ -94,12 +94,25 @@ namespace EVA_Catalogue
             int refreshed = 0;
             foreach (string excelPath in EnumerateCatalogueFiles(directory))
             {
-                if (EnsureCache(excelPath, force))
+                if (EnsureCache(excelPath, force) && HasSupportedSheet(excelPath))
                     refreshed++;
             }
 
             RemoveDeletedSources(directory);
             return refreshed;
+        }
+
+        public int CountCatalogueFiles()
+        {
+            RefreshAll();
+            string directory;
+            lock (syncRoot)
+                directory = sourceDirectory;
+
+            if (string.IsNullOrWhiteSpace(directory) || !Directory.Exists(directory))
+                return 0;
+
+            return EnumerateCatalogueFiles(directory).Count(HasSupportedSheet);
         }
 
         public IReadOnlyList<string> GetProducerNames(string requiredSheetName = null)
@@ -136,6 +149,16 @@ namespace EVA_Catalogue
             if (string.Equals(requiredSheetName, "QFD", StringComparison.OrdinalIgnoreCase))
                 return entry.HasQfdSheet;
             return false;
+        }
+
+        private bool HasSupportedSheet(string excelPath)
+        {
+            EnsureCache(excelPath, false);
+            CatalogueManifestEntry entry;
+            lock (syncRoot)
+                entry = FindManifestEntry(Path.GetFullPath(excelPath));
+
+            return entry != null && (entry.HasQfSheet || entry.HasQfdSheet);
         }
 
         public DataSet GetSeries(string producer, bool residualCurrent)
@@ -313,7 +336,8 @@ namespace EVA_Catalogue
                 NumberOfPoles = ToInt(CellText(sheet, row, 3)), RatedCurrent = ToDouble(CellText(sheet, row, 4)),
                 ResponseCharacteristics = CellText(sheet, row, 5), MaximumBreakingCapacity = ToDouble(CellText(sheet, row, 6)),
                 ThermalOverloadRelease = ToInt(CellText(sheet, row, 7)), Code = CellText(sheet, row, 8),
-                Mark = CellText(sheet, row, 9)
+                Mark = CellText(sheet, row, 9), AdditionalText = CellText(sheet, row, 10),
+                AdditionalNumber = ToDouble(CellText(sheet, row, 11))
             };
         }
 
@@ -325,7 +349,8 @@ namespace EVA_Catalogue
                 NumberOfPoles = ToInt(CellText(sheet, row, 3)), RatedCurrent = ToDouble(CellText(sheet, row, 4)),
                 LeakageCurrent = ToDouble(CellText(sheet, row, 5)), ResponseCharacteristics = CellText(sheet, row, 6),
                 MaximumBreakingCapacity = ToDouble(CellText(sheet, row, 7)), ThermalOverloadRelease = ToInt(CellText(sheet, row, 8)),
-                Code = CellText(sheet, row, 9), Mark = CellText(sheet, row, 10), ResidualCurrentType = CellText(sheet, row, 11)
+                Code = CellText(sheet, row, 9), Mark = CellText(sheet, row, 10), ResidualCurrentType = CellText(sheet, row, 11),
+                AdditionalText = CellText(sheet, row, 12), AdditionalNumber = ToDouble(CellText(sheet, row, 13))
             };
         }
 
@@ -468,6 +493,7 @@ namespace EVA_Catalogue
             table.Columns.Add("ResponseCharacteristics", typeof(string)); table.Columns.Add("MaximumBreakingCapacity", typeof(double));
             table.Columns.Add("ThermalOverloadRelease", typeof(int)); table.Columns.Add("Code", typeof(string));
             table.Columns.Add("Mark", typeof(string)); table.Columns.Add("ResidualCurrentType", typeof(string));
+            table.Columns.Add("AdditionalText", typeof(string)); table.Columns.Add("AdditionalNumber", typeof(double));
             return table;
         }
 
@@ -481,6 +507,7 @@ namespace EVA_Catalogue
             row["MaximumBreakingCapacity"] = item.MaximumBreakingCapacity;
             row["ThermalOverloadRelease"] = item.ThermalOverloadRelease; row["Code"] = item.Code ?? string.Empty;
             row["Mark"] = item.Mark ?? string.Empty; row["ResidualCurrentType"] = item.ResidualCurrentType ?? string.Empty;
+            row["AdditionalText"] = item.AdditionalText ?? string.Empty; row["AdditionalNumber"] = item.AdditionalNumber;
             table.Rows.Add(row);
         }
 
@@ -552,5 +579,7 @@ namespace EVA_Catalogue
         public string Code { get; set; }
         public string Mark { get; set; }
         public string ResidualCurrentType { get; set; }
+        public string AdditionalText { get; set; }
+        public double AdditionalNumber { get; set; }
     }
 }

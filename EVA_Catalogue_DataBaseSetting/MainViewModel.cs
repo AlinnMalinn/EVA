@@ -70,10 +70,8 @@ namespace EVA_Catalogue_DataBaseSetting
 
                 try
                 {
-                    int catalogueCount = Directory.EnumerateFiles(LinkForDB)
-                        .Count(file => !Path.GetFileName(file).StartsWith("~$", StringComparison.Ordinal) &&
-                            (string.Equals(Path.GetExtension(file), ".xlsx", StringComparison.OrdinalIgnoreCase) ||
-                             string.Equals(Path.GetExtension(file), ".xlsm", StringComparison.OrdinalIgnoreCase)));
+                    CatalogueCacheService.Instance.ConfigureDirectory(LinkForDB);
+                    int catalogueCount = CatalogueCacheService.Instance.CountCatalogueFiles();
 
                     return catalogueCount == 0
                         ? "Каталоги не найдены"

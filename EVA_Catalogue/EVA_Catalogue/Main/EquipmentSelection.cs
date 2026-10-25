@@ -40,6 +40,8 @@ namespace EVA_Catalogue
                 List<string> markOfDeviceList = new List<string>(); //инициализация списка для вывода в Excel
                 List<string> nameOfDeviceList = new List<string>(); //инициализация списка для вывода в Excel
                 List<string> maximumBreakingCapacityList = new List<string>(); //инициализация списка для вывода в Excel
+                List<string> additionalTextList = new List<string>();
+                List<string> additionalNumberList = new List<string>();
                 List<string> deviceInfoList = new List<string>(); //инициализация списка для вывода в Excel
 
                 failedItemsQF.Add(sheet);
@@ -109,6 +111,8 @@ namespace EVA_Catalogue
                                     codeOfDeviceList.Add(deviceDataForExсel[1]);
                                     markOfDeviceList.Add(deviceDataForExсel[2]);
                                     maximumBreakingCapacityList.Add(deviceDataForExсel[3]);
+                                    additionalTextList.Add(deviceDataForExсel[4]);
+                                    additionalNumberList.Add(deviceDataForExсel[5]);
                                     producerOfDeviceList.Add(bdName.ToString().Split('_')[0]);
                                     deviceInfoList.Add(deviceInfo + deviceDataForExсel[3] + deviceDataForExсel[2] + deviceDataForExсel[0] + deviceDataForExсel[1] + bdName.ToString().Split('_')[0]);
                                     if (deviceDataForExсel[0] == " ")
@@ -143,6 +147,8 @@ namespace EVA_Catalogue
                                     codeOfDeviceList.Add(deviceDataForExсel[1]);
                                     markOfDeviceList.Add(deviceDataForExсel[2]);
                                     maximumBreakingCapacityList.Add(deviceDataForExсel[3]);
+                                    additionalTextList.Add(deviceDataForExсel[4]);
+                                    additionalNumberList.Add(deviceDataForExсel[5]);
                                     producerOfDeviceList.Add(bdName.ToString().Split('_')[0]);
                                     deviceInfoList.Add(deviceInfo + deviceDataForExсel[3] + deviceDataForExсel[2] + deviceDataForExсel[0] + deviceDataForExсel[1] + bdName.ToString().Split('_')[0]);
                                     if (deviceDataForExсel[0] == " ")
@@ -184,6 +190,8 @@ namespace EVA_Catalogue
                                     codeOfDeviceList.Add(deviceDataForExсel[1]);
                                     markOfDeviceList.Add(deviceDataForExсel[2]);
                                     maximumBreakingCapacityList.Add(deviceDataForExсel[3]);
+                                    additionalTextList.Add(deviceDataForExсel[4]);
+                                    additionalNumberList.Add(deviceDataForExсel[5]);
                                     producerOfDeviceList.Add(bdName.ToString().Split('_')[0]);
                                     deviceInfoList.Add(deviceInfo + deviceDataForExсel[3] + deviceDataForExсel[2] + deviceDataForExсel[0] + deviceDataForExсel[1] + bdName.ToString().Split('_')[0]);
                                     if (deviceDataForExсel[0] == " ")
@@ -219,6 +227,8 @@ namespace EVA_Catalogue
                                     codeOfDeviceList.Add(deviceDataForExсel[1]);
                                     markOfDeviceList.Add(deviceDataForExсel[2]);
                                     maximumBreakingCapacityList.Add(deviceDataForExсel[3]);
+                                    additionalTextList.Add(deviceDataForExсel[4]);
+                                    additionalNumberList.Add(deviceDataForExсel[5]);
                                     producerOfDeviceList.Add(bdName.ToString().Split('_')[0]);
                                     deviceInfoList.Add(deviceInfo + deviceDataForExсel[3] + deviceDataForExсel[2] + deviceDataForExсel[0] + deviceDataForExсel[1] + bdName.ToString().Split('_')[0]);
                                     if (deviceDataForExсel[0] == " ")
@@ -239,6 +249,8 @@ namespace EVA_Catalogue
                         codeOfDeviceList.Add("");
                         markOfDeviceList.Add("");
                         maximumBreakingCapacityList.Add("");
+                        additionalTextList.Add("");
+                        additionalNumberList.Add("");
                         producerOfDeviceList.Add("");
                         deviceInfoList.Add("");
 
@@ -248,7 +260,7 @@ namespace EVA_Catalogue
                     //excel.WhriteDevice1DataToExcel(produserOfDeviceList, codeOfDeviceList, nameOfDeviceList);
                 }
                 //вывод в Excel
-                excel.WhriteDevice1DataToExcel(deviceInfoList,producerOfDeviceList, codeOfDeviceList, nameOfDeviceList, markOfDeviceList, sheet, maximumBreakingCapacityList,  isQFEnabled, isQFDEnabled);
+                excel.WhriteDevice1DataToExcel(deviceInfoList,producerOfDeviceList, codeOfDeviceList, nameOfDeviceList, markOfDeviceList, sheet, maximumBreakingCapacityList, additionalTextList, additionalNumberList, isQFEnabled, isQFDEnabled);
                 if (a == 0)
                 {
                     failedItemsQF.RemoveAt(failedItemsQF.Count - 1);
@@ -290,10 +302,14 @@ namespace EVA_Catalogue
                     deviceDataForExсel.Add(markOfDevice);
                     string maximumBreakingCapacity = dr["MaximumBreakingCapacity"].ToString();
                     deviceDataForExсel.Add(maximumBreakingCapacity);
+                    deviceDataForExсel.Add(dr["AdditionalText"].ToString());
+                    deviceDataForExсel.Add(dr["AdditionalNumber"].ToString());
                 }
                 else
                 {
                     deviceDataForExсel.Add(" ");
+                    deviceDataForExсel.Add("");
+                    deviceDataForExсel.Add("");
                     deviceDataForExсel.Add("");
                     deviceDataForExсel.Add("");
                     deviceDataForExсel.Add("");
